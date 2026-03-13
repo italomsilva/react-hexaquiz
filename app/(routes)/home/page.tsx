@@ -19,7 +19,7 @@ export default function HomePage() {
         style={{
           backgroundImage: "url('/images/home-bg.jpg')",
           backgroundColor: theme === "dark" ? "rgba(0, 32, 34, 0.4)" : "rgba(255, 255, 255, 0.4)",
-          backgroundBlendMode: theme === "dark" ? "multiply" : "overlay",
+          backgroundBlendMode: theme === "dark" ? "multiply" : "",
           backgroundSize: "cover",
           backgroundAttachment: "fixed",
           backgroundPosition: "center"

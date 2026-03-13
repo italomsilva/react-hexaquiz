@@ -5,8 +5,10 @@ import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 import { Button } from "@/app/components/ui/Button";
 import { useAuth } from "@/app/context/AuthContext";
+import { useTheme } from "@/app/context/ThemeContext";
 
 export default function ProfilePage() {
+  const theme = useTheme();
   const { user, logout } = useAuth();
 
   return (
@@ -34,7 +36,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="text-center">
-              <h2 className="text-2xl font-black italic tracking-tighter uppercase">{user?.email.split('@')[0]}</h2>
+              <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>{user?.email.split('@')[0]}</h2>
               <p className="text-foreground/60 text-sm font-medium">{user?.email}</p>
             </div>
           </section>
@@ -52,17 +54,6 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-4 pt-4 border-t border-border-standard">
-              <div className="flex flex-col space-y-3">
-                <Button variant="secondary" fullWidth className="justify-start px-6 gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                  EDITAR PERFIL
-                </Button>
-                <Button variant="secondary" fullWidth className="justify-start px-6 gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                  CONFIGURAÇÕES
-                </Button>
-              </div>
-
               <div className="pt-6">
                 <Button
                   onClick={logout}
