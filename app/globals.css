@@ -1,40 +1,86 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --neon: #66cc00; /* A bit darker for light mode visibility */
-  --surface: #f8f8f8;
-  --surface-elevated: #f0f0f0;
-  --border-subtle: #e5e5e5;
-  --border-standard: #d4d4d4;
+  /* Light Mode Palette (White/Black base) */
+  --color-primary: #5ab133;
+  --color-primary-rgb: 90, 177, 51;
+  --color-primary-light: #73e341;
+  --color-primary-dark: #003d31;
+  --color-primary-dark-rgb: 0, 61, 49;
+  --color-primary-hover: #4d9a2a;
+  
+  --color-secondary: #002022;
+  --color-secondary-hover: #003d31;
+
+  --color-background: #ffffff;
+  --color-foreground: #002022;
+  --color-surface: #f8faf9;
+  --color-surface-elevated: #f0f4f2;
+  
+  --color-border-subtle: rgba(0, 32, 34, 0.1);
+  --color-border-standard: rgba(0, 32, 34, 0.2);
+  
+  --color-error: #dc2626;
+  --color-success: #16a34a;
+  --color-warning: #ca8a04;
+
   --font-inter: var(--font-inter);
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --neon: #CCFF00;
-  --surface: #111111;
-  --surface-elevated: #1a1a1a;
-  --border-subtle: #222222;
-  --border-standard: #333333;
+  /* Dark Mode Palette (User specific colors) */
+  --color-primary: #73e341;
+  --color-primary-rgb: 115, 227, 65;
+  --color-primary-light: #82d89a;
+  --color-primary-dark: #003d31;
+  --color-primary-dark-rgb: 0, 61, 49;
+  --color-primary-hover: #8ef05d;
+  
+  --color-secondary: #002022;
+  --color-secondary-hover: #00302b;
+
+  --color-background: #002022;
+  --color-foreground: #ffffff;
+  --color-surface: #003d31;
+  --color-surface-elevated: #004d3e;
+  
+  --color-border-subtle: rgba(130, 216, 154, 0.15);
+  --color-border-standard: rgba(130, 216, 154, 0.3);
+  
+  --color-error: #ff4444;
+  --color-success: #73e341;
+  --color-warning: #ffbb33;
 }
 
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-neon: var(--neon);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-border-subtle: var(--border-subtle);
-  --color-border-standard: var(--border-standard);
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-hover: var(--color-primary-hover);
+  
+  --color-secondary: var(--color-secondary);
+  --color-secondary-hover: var(--color-secondary-hover);
+  
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-standard: var(--color-border-standard);
+  
+  --color-neon: var(--color-primary);
   --font-sans: var(--font-inter);
 }
 
 body {
-  background: var(--background);
+  background-color: #143f2e;
+  background-blend-mode: darken;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
 }

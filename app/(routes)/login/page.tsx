@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+import { useAuth } from "@/app/context/AuthContext";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -36,13 +36,11 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-[100dvh] flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-      {/* Background Effect */}
-      <div className="absolute top-1/4 -right-20 w-72 h-72 bg-neon/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-neon/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background Effect Removed */}
 
       <div className="w-full max-w-sm z-10 flex flex-col items-center space-y-10">
         <div className="text-center flex flex-col items-center space-y-3">
-          <h1 className="text-5xl font-black italic tracking-tighter text-neon drop-shadow-[0_0_15px_rgba(204,255,0,0.6)]">
+          <h1 className="text-5xl font-black italic tracking-tighter text-primary">
             QUIZ<span className="text-foreground">2026</span>
           </h1>
           <p className="text-gray-400 font-medium tracking-tight">
@@ -51,23 +49,23 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleLogin} className="w-full space-y-5 bg-surface border border-border-subtle p-8 rounded-2xl shadow-2xl">
-          <Input 
-            label="E-mail" 
-            placeholder="teste123@gmail.com" 
-            required 
+          <Input
+            label="E-mail"
+            placeholder="teste123@gmail.com"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={error ? " " : ""} // Basic visual indicator
           />
-          <Input 
-            label="Senha" 
-            type="password" 
-            placeholder="••••••••" 
-            required 
+          <Input
+            label="Senha"
+            type="password"
+            placeholder="••••••••"
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          
+
           {error && (
             <div className="p-3 rounded-md bg-red-500/10 border border-red-500/50 text-red-500 text-sm font-bold text-center animate-shake">
               {error}
@@ -75,19 +73,19 @@ export default function LoginPage() {
           )}
 
           <div className="flex justify-end mt-1">
-            <Link href="#" className="text-sm font-medium text-gray-400 hover:text-neon transition-colors">
+            <Link href="#" className="text-sm font-medium text-foreground/40 hover:text-primary transition-colors">
               Redefinir Senha
             </Link>
           </div>
 
-          <Button type="submit" fullWidth disabled={isLoading} className="mt-6 shadow-[0_0_15px_rgba(204,255,0,0.4)]">
+          <Button type="submit" fullWidth disabled={isLoading} className="mt-6">
             {isLoading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
 
-        <div className="text-center text-sm font-medium text-gray-400">
+        <div className="text-center text-sm font-medium text-foreground/40">
           Ainda não tem cadastro?{" "}
-          <Link href="#" className="text-neon hover:underline underline-offset-4">
+          <Link href="#" className="text-primary hover:underline underline-offset-4">
             Criar Cadastro
           </Link>
         </div>

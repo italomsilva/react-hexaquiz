@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -17,8 +17,8 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-neon border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-neon font-bold tracking-widest animate-pulse">CARREGANDO...</p>
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-primary font-bold tracking-widest animate-pulse">CARREGANDO...</p>
       </div>
     );
   }

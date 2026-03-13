@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Header } from "@/components/layout/Header";
-import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
+import { Header } from "@/app/components/layout/Header";
+import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 
 interface RankingItem {
   rank: number;
@@ -36,28 +36,26 @@ export default function RankingPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        
+
         <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col space-y-6">
           <section className="space-y-4">
             <h2 className="text-3xl font-black italic tracking-tight text-center">
               CLASSIFICAÇÃO
             </h2>
-            
+
             {/* Toggle Tabs */}
             <div className="flex p-1 bg-surface border border-border-subtle rounded-xl">
               <button
                 onClick={() => setActiveTab("weekly")}
-                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all ${
-                  activeTab === "weekly" ? "bg-neon text-background shadow-[0_0_15px_rgba(204,255,0,0.3)]" : "text-gray-500"
-                }`}
+                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all ${activeTab === "weekly" ? "bg-primary text-background" : "text-foreground/40"
+                  }`}
               >
                 SEMANAL
               </button>
               <button
                 onClick={() => setActiveTab("general")}
-                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all ${
-                  activeTab === "general" ? "bg-neon text-background shadow-[0_0_15px_rgba(204,255,0,0.3)]" : "text-gray-500"
-                }`}
+                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all ${activeTab === "general" ? "bg-primary text-background" : "text-foreground/40"
+                  }`}
               >
                 GERAL
               </button>
@@ -69,36 +67,34 @@ export default function RankingPage() {
             {data.map((item) => (
               <div
                 key={item.rank}
-                className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
-                  item.isCurrentUser 
-                    ? "bg-neon/10 border-neon shadow-[0_0_15px_rgba(204,255,0,0.1)]" 
+                className={`flex items-center justify-between p-4 rounded-xl border transition-all ${item.isCurrentUser
+                    ? "bg-primary/10 border-primary"
                     : "bg-surface border-border-subtle"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic ${
-                    item.rank === 1 ? "bg-yellow-500 text-background" :
-                    item.rank === 2 ? "bg-gray-400 text-background" :
-                    item.rank === 3 ? "bg-amber-600 text-background" :
-                    "bg-surface-elevated text-gray-500"
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic ${item.rank === 1 ? "bg-yellow-500 text-background" :
+                      item.rank === 2 ? "bg-foreground/20 text-foreground" :
+                        item.rank === 3 ? "bg-amber-600 text-background" :
+                          "bg-surface-elevated text-foreground/40"
+                    }`}>
                     {item.rank}
                   </div>
-                  <span className={`font-bold ${item.isCurrentUser ? "text-neon" : "text-foreground"}`}>
+                  <span className={`font-bold ${item.isCurrentUser ? "text-primary" : "text-foreground"}`}>
                     {item.name}
                   </span>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="font-black text-foreground">{item.points}</span>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-tighter">PONTOS</span>
+                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-tighter">PONTOS</span>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-auto pt-6 text-center">
-            <p className="text-gray-500 text-xs font-medium uppercase tracking-widest">
-              Próxima atualização em <span className="text-neon">12h 45m</span>
+            <p className="text-foreground/40 text-xs font-medium uppercase tracking-widest">
+              Próxima atualização em <span className="text-primary">12h 45m</span>
             </p>
           </div>
         </main>

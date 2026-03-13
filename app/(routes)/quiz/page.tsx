@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Header } from "@/components/layout/Header";
-import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
-import { Button } from "@/components/ui/Button";
+import { Header } from "@/app/components/layout/Header";
+import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
+import { Button } from "@/app/components/ui/Button";
 import Link from "next/link";
 
 interface Question {
@@ -70,15 +70,15 @@ export default function QuizPage() {
           <Header />
           <main className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 animate-in zoom-in duration-500">
             <div className="space-y-4">
-              <div className="text-neon text-6xl font-black italic tracking-widest drop-shadow-[0_0_20px_rgba(204,255,0,0.5)]">
+              <div className="text-primary text-6xl font-black italic tracking-widest">
                 FIM!
               </div>
               <p className="text-2xl font-bold">Você acertou {score} de {QUESTIONS.length} questões.</p>
             </div>
-            
-            <div className="w-full max-w-sm p-8 rounded-2xl bg-surface border border-neon/20 shadow-[0_0_30px_rgba(204,255,0,0.1)]">
-              <div className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
-              <div className="text-4xl font-black text-neon">{score * 100} XP</div>
+
+            <div className="w-full max-w-sm p-8 rounded-2xl bg-surface border border-primary/20 shadow-xl">
+              <div className="text-foreground/40 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
+              <div className="text-4xl font-black text-primary">{score * 100} XP</div>
             </div>
 
             <div className="flex flex-col w-full max-w-sm gap-4">
@@ -99,19 +99,19 @@ export default function QuizPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        
+
         <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col">
           {/* Progress Bar */}
           <div className="w-full bg-surface-elevated h-2 rounded-full mb-8 overflow-hidden">
-            <div 
-              className="bg-neon h-full transition-all duration-500 shadow-[0_0_10px_#ccff00]" 
+            <div
+              className="bg-primary h-full transition-all duration-500"
               style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%` }}
             />
           </div>
 
           <div className="flex-1 flex flex-col space-y-8">
             <div className="space-y-4">
-              <span className="text-neon font-black italic tracking-widest text-sm">
+              <span className="text-primary font-black italic tracking-widest text-sm">
                 PERGUNTA {currentQuestionIndex + 1}/{QUESTIONS.length}
               </span>
               <h2 className="text-2xl font-black italic leading-tight uppercase">
@@ -122,17 +122,17 @@ export default function QuizPage() {
             <div className="space-y-3">
               {currentQuestion.options.map((option, index) => {
                 let statusClass = "bg-surface border-border-standard text-foreground";
-                
+
                 if (isAnswered) {
                   if (index === currentQuestion.correctAnswer) {
-                    statusClass = "bg-green-500/20 border-green-500 text-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]";
+                    statusClass = "bg-green-500/10 border-green-500 text-green-500";
                   } else if (index === selectedOption) {
-                    statusClass = "bg-red-500/20 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]";
+                    statusClass = "bg-red-500/10 border-red-500 text-red-500";
                   } else {
-                    statusClass = "bg-surface border-border-subtle text-gray-600 opacity-50";
+                    statusClass = "bg-surface border-border-subtle text-foreground/40 opacity-50";
                   }
                 } else if (selectedOption === index) {
-                  statusClass = "border-neon bg-neon/10 text-neon";
+                  statusClass = "border-primary bg-primary/10 text-primary";
                 }
 
                 return (
@@ -158,10 +158,10 @@ export default function QuizPage() {
           </div>
 
           <div className="mt-8">
-            <Button 
-              fullWidth 
-              size="lg" 
-              disabled={!isAnswered} 
+            <Button
+              fullWidth
+              size="lg"
+              disabled={!isAnswered}
               onClick={handleNext}
               className={!isAnswered ? "opacity-0 pointer-events-none" : "animate-in slide-in-from-bottom-2"}
             >
