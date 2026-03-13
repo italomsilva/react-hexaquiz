@@ -17,8 +17,8 @@ export default function ProfilePage() {
         <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <section className="flex flex-col items-center space-y-4">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-neon p-1 shadow-[0_0_20px_rgba(204,255,0,0.2)]">
-                <div className="w-full h-full rounded-full bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 rounded-full bg-surface border-2 border-neon p-1 shadow-[0_0_20px_rgba(204,255,0,0.2)]">
+                <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -41,11 +41,11 @@ export default function ProfilePage() {
 
           <section className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-5 rounded-2xl bg-[#0f0f0f] border border-[#222] text-center space-y-1">
+              <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-gray-500 uppercase tracking-widest">Partidas</div>
                 <div className="text-2xl font-black italic text-neon">124</div>
               </div>
-              <div className="p-5 rounded-2xl bg-[#0f0f0f] border border-[#222] text-center space-y-1">
+              <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-gray-500 uppercase tracking-widest">Precisão</div>
                 <div className="text-2xl font-black italic text-neon">82%</div>
               </div>

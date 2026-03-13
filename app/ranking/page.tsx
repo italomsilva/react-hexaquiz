@@ -44,7 +44,7 @@ export default function RankingPage() {
             </h2>
             
             {/* Toggle Tabs */}
-            <div className="flex p-1 bg-[#111] border border-[#222] rounded-xl">
+            <div className="flex p-1 bg-surface border border-border-subtle rounded-xl">
               <button
                 onClick={() => setActiveTab("weekly")}
                 className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all ${
@@ -72,7 +72,7 @@ export default function RankingPage() {
                 className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
                   item.isCurrentUser 
                     ? "bg-neon/10 border-neon shadow-[0_0_15px_rgba(204,255,0,0.1)]" 
-                    : "bg-[#0f0f0f] border-[#222]"
+                    : "bg-surface border-border-subtle"
                 }`}
               >
                 <div className="flex items-center gap-4">
@@ -80,7 +80,7 @@ export default function RankingPage() {
                     item.rank === 1 ? "bg-yellow-500 text-background" :
                     item.rank === 2 ? "bg-gray-400 text-background" :
                     item.rank === 3 ? "bg-amber-600 text-background" :
-                    "bg-[#1a1a1a] text-gray-500"
+                    "bg-surface-elevated text-gray-500"
                   }`}>
                     {item.rank}
                   </div>

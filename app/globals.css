@@ -1,15 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --neon: #ccff00;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --neon: #66cc00; /* A bit darker for light mode visibility */
+  --surface: #f8f8f8;
+  --surface-elevated: #f0f0f0;
+  --border-subtle: #e5e5e5;
+  --border-standard: #d4d4d4;
+  --font-inter: var(--font-inter);
 }
 
-@theme inline {
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --neon: #CCFF00;
+  --surface: #111111;
+  --surface-elevated: #1a1a1a;
+  --border-subtle: #222222;
+  --border-standard: #333333;
+}
+
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-neon: var(--neon);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-standard: var(--border-standard);
   --font-sans: var(--font-inter);
 }
 
@@ -17,4 +36,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

@@ -50,7 +50,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="w-full space-y-5 bg-[#111] border border-[#222] p-8 rounded-2xl shadow-2xl">
+        <form onSubmit={handleLogin} className="w-full space-y-5 bg-surface border border-border-subtle p-8 rounded-2xl shadow-2xl">
           <Input 
             label="E-mail" 
             placeholder="teste123@gmail.com" 

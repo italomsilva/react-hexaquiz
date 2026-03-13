@@ -26,7 +26,7 @@ export default function HomePage() {
           </section>
 
           {/* Featured CTA */}
-          <div className="relative group overflow-hidden rounded-2xl border-2 border-neon/30 bg-[#111] p-1 shadow-[0_0_20px_rgba(204,255,0,0.1)] transition-all hover:border-neon hover:shadow-[0_0_30px_rgba(204,255,0,0.3)]">
+          <div className="relative group overflow-hidden rounded-2xl border-2 border-neon/30 bg-surface p-1 shadow-[0_0_20px_rgba(204,255,0,0.1)] transition-all hover:border-neon hover:shadow-[0_0_30px_rgba(204,255,0,0.3)]">
             <div className="absolute inset-0 bg-gradient-to-br from-neon/10 to-transparent opacity-50 group-hover:opacity-80 transition-opacity" />
             <div className="relative p-8 flex flex-col items-center text-center space-y-6">
               <div className="w-20 h-20 rounded-full bg-neon/20 flex items-center justify-center border border-neon/40 shadow-inner group-hover:scale-110 transition-transform duration-500">
@@ -46,9 +46,9 @@ export default function HomePage() {
 
           {/* Quick Navigation Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <Link href="/ranking" className="group p-6 rounded-xl bg-[#0f0f0f] border border-[#222] hover:border-neon/50 transition-all active:scale-95">
+            <Link href="/ranking" className="group p-6 rounded-xl bg-surface border border-border-subtle hover:border-neon/50 transition-all active:scale-95">
               <div className="flex flex-col items-center space-y-3">
-                <div className="p-3 rounded-lg bg-[#1a1a1a] text-gray-400 group-hover:text-neon group-hover:bg-neon/10 transition-colors">
+                <div className="p-3 rounded-lg bg-surface-elevated text-gray-400 group-hover:text-neon group-hover:bg-neon/10 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                     <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
@@ -62,9 +62,9 @@ export default function HomePage() {
               </div>
             </Link>
 
-            <Link href="/profile" className="group p-6 rounded-xl bg-[#0f0f0f] border border-[#222] hover:border-neon/50 transition-all active:scale-95">
+            <Link href="/profile" className="group p-6 rounded-xl bg-surface border border-border-subtle hover:border-neon/50 transition-all active:scale-95">
               <div className="flex flex-col items-center space-y-3">
-                <div className="p-3 rounded-lg bg-[#1a1a1a] text-gray-400 group-hover:text-neon group-hover:bg-neon/10 transition-colors">
+                <div className="p-3 rounded-lg bg-surface-elevated text-gray-400 group-hover:text-neon group-hover:bg-neon/10 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -76,9 +76,9 @@ export default function HomePage() {
           </div>
 
           {/* Quick Stats Summary (Mini Ranking) */}
-          <div className="rounded-xl bg-[#0f0f0f] border border-[#222] p-6 space-y-4">
+          <div className="rounded-xl bg-surface border border-border-subtle p-6 space-y-4">
             <h4 className="text-xs font-black tracking-widest text-gray-500 uppercase">Resumo da Copa</h4>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#161616] border border-[#222]">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-surface-elevated border border-border-subtle">
               <div className="flex items-center gap-3">
                 <span className="text-xl font-black italic text-neon/60">#42</span>
                 <span className="text-sm font-bold">Sua Posição</span>

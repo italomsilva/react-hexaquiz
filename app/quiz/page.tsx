@@ -76,7 +76,7 @@ export default function QuizPage() {
               <p className="text-2xl font-bold">Você acertou {score} de {QUESTIONS.length} questões.</p>
             </div>
             
-            <div className="w-full max-w-sm p-8 rounded-2xl bg-[#111] border border-neon/20 shadow-[0_0_30px_rgba(204,255,0,0.1)]">
+            <div className="w-full max-w-sm p-8 rounded-2xl bg-surface border border-neon/20 shadow-[0_0_30px_rgba(204,255,0,0.1)]">
               <div className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
               <div className="text-4xl font-black text-neon">{score * 100} XP</div>
             </div>
@@ -102,7 +102,7 @@ export default function QuizPage() {
         
         <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col">
           {/* Progress Bar */}
-          <div className="w-full bg-[#1a1a1a] h-2 rounded-full mb-8 overflow-hidden">
+          <div className="w-full bg-surface-elevated h-2 rounded-full mb-8 overflow-hidden">
             <div 
               className="bg-neon h-full transition-all duration-500 shadow-[0_0_10px_#ccff00]" 
               style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%` }}
@@ -121,7 +121,7 @@ export default function QuizPage() {
 
             <div className="space-y-3">
               {currentQuestion.options.map((option, index) => {
-                let statusClass = "bg-[#0f0f0f] border-[#333] text-foreground";
+                let statusClass = "bg-surface border-border-standard text-foreground";
                 
                 if (isAnswered) {
                   if (index === currentQuestion.correctAnswer) {
@@ -129,7 +129,7 @@ export default function QuizPage() {
                   } else if (index === selectedOption) {
                     statusClass = "bg-red-500/20 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]";
                   } else {
-                    statusClass = "bg-[#0f0f0f] border-[#222] text-gray-600 opacity-50";
+                    statusClass = "bg-surface border-border-subtle text-gray-600 opacity-50";
                   }
                 } else if (selectedOption === index) {
                   statusClass = "border-neon bg-neon/10 text-neon";

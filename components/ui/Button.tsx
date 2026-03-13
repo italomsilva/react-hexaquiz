@@ -11,8 +11,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = 'inline-flex items-center justify-center rounded-md font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed';
     
     const variants = {
-      primary: 'bg-neon text-background hover:bg-[#b3e600] shadow-[0_0_15px_rgba(204,255,0,0.4)] hover:shadow-[0_0_25px_rgba(204,255,0,0.7)]',
-      secondary: 'bg-[#1a1a1a] text-foreground hover:bg-[#2a2a2a] border border-[#333]',
+      primary: 'bg-neon text-background hover:brightness-110 shadow-[0_0_15px_rgba(204,255,0,0.4)] hover:shadow-[0_0_25px_rgba(204,255,0,0.7)]',
+      secondary: 'bg-surface-elevated text-foreground hover:bg-surface border border-border-standard',
       outline: 'bg-transparent border-2 border-neon text-neon hover:bg-neon hover:text-background shadow-[0_0_10px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.5)]',
     };
 
