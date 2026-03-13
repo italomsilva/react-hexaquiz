@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Quiz 2026",
+  title: "HexaQuiz",
   description: "Plataforma web para torcedores e gamers",
 };
 

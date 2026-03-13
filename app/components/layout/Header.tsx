@@ -7,7 +7,7 @@ export const Header = () => {
     <header className="sticky top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-md border-b border-border-subtle z-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md flex items-center justify-between">
         <Link href="/" className="text-2xl font-black italic tracking-tighter text-primary">
-          QUIZ<span className="text-foreground">2026</span>
+          Hexa<span className="text-foreground">Quiz</span>
         </Link>
 
         <div className="flex items-center gap-3">

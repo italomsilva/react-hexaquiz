@@ -74,12 +74,8 @@
 }
 
 body {
-  background-color: #143f2e;
-  background-blend-mode: darken;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans), sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;

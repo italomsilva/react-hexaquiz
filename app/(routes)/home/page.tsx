@@ -6,9 +6,11 @@ import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 import { Button } from "@/app/components/ui/Button";
 import { useAuth } from "@/app/context/AuthContext";
 import Link from "next/link";
+import { useTheme } from "@/app/context/ThemeContext";
 
 export default function HomePage() {
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   return (
     <ProtectedRoute>
@@ -16,8 +18,8 @@ export default function HomePage() {
         className="min-h-screen text-foreground flex flex-col"
         style={{
           backgroundImage: "url('/images/home-bg.jpg')",
-          backgroundColor: "rgba(var(--color-primary-dark-rgb), 0.8)",
-          backgroundBlendMode: "darken",
+          backgroundColor: theme === "dark" ? "rgba(0, 32, 34, 0.4)" : "rgba(255, 255, 255, 0.4)",
+          backgroundBlendMode: theme === "dark" ? "multiply" : "overlay",
           backgroundSize: "cover",
           backgroundAttachment: "fixed",
           backgroundPosition: "center"
