@@ -80,3 +80,22 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
 }
+
+@keyframes bounce-short {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.animate-bounce-short {
+  animation: bounce-short 0.4s ease-in-out;
+}
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out 2;
+}

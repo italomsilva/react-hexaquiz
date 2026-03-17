@@ -1,0 +1,65 @@
+"use client";
+
+import { Question, QuestionType } from "@/app/types/quiz";
+import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
+import { TrueFalseQuestion } from "./TrueFalseQuestion";
+import { GuessTheWordQuestion } from "./GuessTheWordQuestion";
+import { WordleQuestion } from "./WordleQuestion";
+
+interface QuestionRendererProps {
+  question: Question;
+  selectedOption: string | null;
+  isAnswered: boolean;
+  onSelect: (value: string) => void;
+}
+
+export function QuestionRenderer({
+  question,
+  selectedOption,
+  isAnswered,
+  onSelect,
+}: QuestionRendererProps) {
+  switch (question.type) {
+    case QuestionType.MULTIPLE_CHOICE:
+      return (
+        <MultipleChoiceQuestion
+          question={question}
+          selectedOption={selectedOption}
+          isAnswered={isAnswered}
+          onSelect={onSelect}
+        />
+      );
+    case QuestionType.TRUE_FALSE:
+      return (
+        <TrueFalseQuestion
+          question={question}
+          selectedOption={selectedOption}
+          isAnswered={isAnswered}
+          onSelect={onSelect}
+        />
+      );
+    case QuestionType.GUESS_THE_WORD:
+      return (
+        <GuessTheWordQuestion
+          question={question}
+          selectedOption={selectedOption}
+          isAnswered={isAnswered}
+          onSelect={onSelect}
+        />
+      );
+    case QuestionType.WORDLE:
+      return (
+        <WordleQuestion
+          question={question}
+          isAnswered={isAnswered}
+          onSelect={onSelect}
+        />
+      );
+    default:
+      return (
+        <div className="p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-xl font-bold">
+          Tipo de questão desconhecido: {question.type}
+        </div>
+      );
+  }
+}
