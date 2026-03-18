@@ -3,6 +3,7 @@
 import { Question } from "@/app/types/quiz";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/Button";
+import Image from "next/image";
 
 interface WordleQuestionProps {
   question: Question;
@@ -88,6 +89,19 @@ export function WordleQuestion({
 
   return (
     <div className="flex flex-col items-center space-y-6 animate-in fade-in zoom-in duration-500">
+      {/* Question Image */}
+      {question.image && (
+        <div className="relative aspect-square w-full max-w-[200px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl mb-4">
+          <Image
+            src={question.image}
+            alt={question.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
+
       {/* Grid */}
       <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${wordLength}, 1fr)` }}>
         {[...Array(MAX_ATTEMPTS)].map((_, rowIndex) => {

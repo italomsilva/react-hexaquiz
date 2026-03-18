@@ -5,12 +5,14 @@ import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { TrueFalseQuestion } from "./TrueFalseQuestion";
 import { GuessTheWordQuestion } from "./GuessTheWordQuestion";
 import { WordleQuestion } from "./WordleQuestion";
+import { OrderingQuestion } from "./OrderingQuestion";
 
 interface QuestionRendererProps {
   question: Question;
   selectedOption: string | null;
   isAnswered: boolean;
   onSelect: (value: string) => void;
+  attempts: number;
 }
 
 export function QuestionRenderer({
@@ -18,6 +20,7 @@ export function QuestionRenderer({
   selectedOption,
   isAnswered,
   onSelect,
+  attempts,
 }: QuestionRendererProps) {
   switch (question.type) {
     case QuestionType.MULTIPLE_CHOICE:
@@ -45,11 +48,20 @@ export function QuestionRenderer({
           selectedOption={selectedOption}
           isAnswered={isAnswered}
           onSelect={onSelect}
+          attempts={attempts}
         />
       );
     case QuestionType.WORDLE:
       return (
         <WordleQuestion
+          question={question}
+          isAnswered={isAnswered}
+          onSelect={onSelect}
+        />
+      );
+    case QuestionType.ORDERING:
+      return (
+        <OrderingQuestion
           question={question}
           isAnswered={isAnswered}
           onSelect={onSelect}

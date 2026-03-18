@@ -14,6 +14,7 @@ export default function QuizPage() {
     selectedOption,
     isAnswered,
     score,
+    attempts,
     isFinished,
     currentQuestion,
     totalQuestions,
@@ -31,12 +32,13 @@ export default function QuizPage() {
               <div className="text-primary text-6xl font-black italic tracking-widest">
                 FIM!
               </div>
-              <p className="text-2xl font-bold">Você acertou {score} de {totalQuestions} questões.</p>
+              <p className="text-2xl font-bold">Quiz finalizado com sucesso.</p>
             </div>
 
             <div className="w-full max-w-sm p-8 rounded-2xl bg-surface border border-primary/20 shadow-xl">
               <div className="text-foreground/40 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
-              <div className="text-4xl font-black text-primary">{score * 100} XP</div>
+              <div className="text-6xl font-black text-primary">{score}</div>
+              <div className="text-primary font-bold tracking-widest mt-1">XP TOTAL</div>
             </div>
 
             <div className="flex flex-col w-full max-w-sm gap-4">
@@ -69,9 +71,14 @@ export default function QuizPage() {
 
           <div className="flex-1 flex flex-col space-y-8">
             <div className="space-y-4">
-              <span className="text-primary font-black italic tracking-widest text-sm">
-                PERGUNTA {currentQuestionIndex + 1}/{totalQuestions}
-              </span>
+              <div className="flex justify-between items-center">
+                <span className="text-primary font-black italic tracking-widest text-sm text-shadow-glow">
+                  PERGUNTA {currentQuestionIndex + 1}/{totalQuestions}
+                </span>
+                <span className="text-foreground/40 font-bold text-xs uppercase tracking-widest bg-surface-elevated px-3 py-1 rounded-full border border-border-subtle">
+                  Vale {currentQuestion.points} XP
+                </span>
+              </div>
               <h2 className="text-2xl font-black italic leading-tight uppercase">
                 {currentQuestion.title}
               </h2>
@@ -83,6 +90,7 @@ export default function QuizPage() {
               selectedOption={selectedOption}
               isAnswered={isAnswered}
               onSelect={handleOptionSelect}
+              attempts={attempts}
             />
           </div>
 

@@ -3,11 +3,13 @@ export enum QuestionType {
   TRUE_FALSE = "true_false",
   GUESS_THE_WORD = "guess_the_word",
   WORDLE = "wordle",
+  ORDERING = "ordering",
 }
 
 export interface Option {
   id: string;
   text: string;
+  image?: string;
 }
 
 export interface Question {
@@ -16,4 +18,6 @@ export interface Question {
   type: QuestionType;
   answer: string;
   options: Option[];
+  image?: string;
+  points: number;
 }

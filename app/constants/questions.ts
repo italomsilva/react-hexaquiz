@@ -2,10 +2,25 @@ import { Question, QuestionType } from "@/app/types/quiz";
 
 export const QUESTIONS: Question[] = [
   {
+    id: "0",
+    title: "Complete a escalação",
+    type: QuestionType.MULTIPLE_CHOICE,
+    image: "/images/bg-home.png",
+    answer: '0',
+    points: 100,
+    options: [
+      { id: '0', text: "Opção 1", image: "/images/bg-home.png" },
+      { id: '1', text: "Opção 2", image: "/images/bg-home.png" },
+      { id: '2', text: "Opção 3", image: "/images/bg-home.png" },
+      { id: '3', text: "Opção 4", image: "/images/bg-home.png" }
+    ],
+  },
+  {
     id: "1",
     title: "Qual país sediará a abertura da Copa do Mundo de 2026?",
     type: QuestionType.MULTIPLE_CHOICE,
     answer: '2',
+    points: 100,
     options: [
       { id: '0', text: "Canadá" },
       { id: '1', text: "Estados Unidos" },
@@ -18,6 +33,7 @@ export const QUESTIONS: Question[] = [
     title: "A Copa de 2026 será a primeira com 48 seleções.",
     type: QuestionType.TRUE_FALSE,
     answer: '0',
+    points: 50,
     options: [
       { id: '0', text: "Verdadeiro" },
       { id: '1', text: "Falso" }
@@ -25,16 +41,20 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: '3',
-    title: "Em qual estádio será o jogo de abertura? (Dica: é no México)",
+    title: "Em qual estádio será o jogo de abertura?",
     type: QuestionType.GUESS_THE_WORD,
     answer: "AZTECA",
-    options: [],
+    points: 200,
+    options: [
+      { id: 'hint', text: "Foi palco das finais de 1970 e 1986." }
+    ],
   },
   {
     id: '4',
     title: "Qual estado americano receberá mais jogos da Copa?",
     type: QuestionType.WORDLE,
     answer: "TEXAS",
+    points: 150,
     options: [],
   },
   {
@@ -42,6 +62,7 @@ export const QUESTIONS: Question[] = [
     title: "Cidade dos EUA que sediará a disputa do 3º lugar:",
     type: QuestionType.WORDLE,
     answer: "MIAMI",
+    points: 150,
     options: [],
   },
   {
@@ -49,6 +70,7 @@ export const QUESTIONS: Question[] = [
     title: "Em qual continente será realizada a Copa de 2026?",
     type: QuestionType.MULTIPLE_CHOICE,
     answer: '1',
+    points: 100,
     options: [
       { id: '0', text: "Europa" },
       { id: '1', text: "América do Norte" },
@@ -61,6 +83,7 @@ export const QUESTIONS: Question[] = [
     title: "O que será decidido no MetLife Stadium em 19 de julho?",
     type: QuestionType.WORDLE,
     answer: "FINAL",
+    points: 150,
     options: [],
   },
   {
@@ -68,11 +91,24 @@ export const QUESTIONS: Question[] = [
     title: "Qual dessas cidades canadenses é sede da Copa?",
     type: QuestionType.MULTIPLE_CHOICE,
     answer: '3',
+    points: 100,
     options: [
       { id: '0', text: "Ottawa" },
       { id: '1', text: "Montreal" },
       { id: '2', text: "Quebec" },
       { id: '3', text: "Toronto" }
+    ],
+  },
+  {
+    id: '9',
+    title: "Ordene os países sede da Copa de 2026 pelo número de cidades sede (do maior para o menor):",
+    type: QuestionType.ORDERING,
+    points: 200,
+    answer: "usa,mexico,canada",
+    options: [
+      { id: 'canada', text: "Canadá" },
+      { id: 'mexico', text: "México" },
+      { id: 'usa', text: "Estados Unidos" },
     ],
   }
 ];

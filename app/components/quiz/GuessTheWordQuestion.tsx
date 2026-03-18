@@ -3,12 +3,14 @@
 import { Question } from "@/app/types/quiz";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
+import Image from "next/image";
 
 interface GuessTheWordQuestionProps {
   question: Question;
   selectedOption: string | null;
   isAnswered: boolean;
   onSelect: (answer: string) => void;
+  attempts: number;
 }
 
 export function GuessTheWordQuestion({
@@ -16,6 +18,7 @@ export function GuessTheWordQuestion({
   selectedOption,
   isAnswered,
   onSelect,
+  attempts,
 }: GuessTheWordQuestionProps) {
   const [inputValue, setInputValue] = useState("");
   const targetAnswer = question.answer.toUpperCase();
@@ -29,17 +32,55 @@ export function GuessTheWordQuestion({
     e?.preventDefault();
     if (!inputValue || isAnswered) return;
     onSelect(inputValue.toUpperCase());
+    setInputValue(""); // Clear input after submission
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Question Image */}
+      {question.image && (
+        <div className="relative aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl animate-in zoom-in duration-500">
+          <Image
+            src={question.image}
+            alt={question.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
+
       <div className="flex flex-col items-center space-y-6">
+        {/* Attempts & Hint Display */}
+        {!isAnswered && (
+          <div className="flex flex-col items-center space-y-4 w-full">
+            <div className="flex gap-2">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
+                    i < attempts 
+                      ? "bg-red-500 border-red-500 scale-90 opacity-50" 
+                      : i === attempts 
+                        ? "bg-primary border-primary animate-pulse shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" 
+                        : "bg-surface border-border-standard"
+                  }`}
+                />
+              ))}
+            </div>
+            
+            {attempts >= 4 && question.options.length > 0 && (
+              <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl text-center animate-in slide-in-from-top-2">
+                <div className="text-[10px] font-black italic text-primary uppercase tracking-[0.2em] mb-1">Última Chance • Dica</div>
+                <div className="text-sm font-medium text-foreground italic">"{question.options[0].text}"</div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Letter Slots Display */}
         <div className="flex flex-wrap justify-center gap-2">
           {targetAnswer.split("").map((letter, index) => {
-            const currentLetter = inputValue[index] || "";
-            const isFilled = !!currentLetter;
-            
             let borderColor = "border-border-standard";
             let textColor = "text-foreground";
             let bg = "bg-surface";
@@ -68,7 +109,7 @@ export function GuessTheWordQuestion({
                 key={index}
                 className={`w-10 h-12 flex items-center justify-center border-b-4 rounded-t-lg font-black text-xl transition-all duration-200 ${borderColor} ${textColor} ${bg} ${!isAnswered && index === inputValue.length ? "animate-pulse" : ""}`}
               >
-                {isAnswered ? (selectedOption?.toUpperCase() || "")[index] || "" : currentLetter}
+                {isAnswered ? (selectedOption?.toUpperCase() || "")[index] || "" : inputValue[index] || ""}
               </div>
             );
           })}
