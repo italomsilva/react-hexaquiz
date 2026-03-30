@@ -56,6 +56,8 @@ export function TrueFalseQuestion({
               key={option.id}
               onClick={() => onSelect(option.id)}
               disabled={isAnswered}
+              aria-label={`${option.text}${isAnswered && correctAnswer === option.id ? " - Correto" : isAnswered && selectedOption === option.id ? " - Incorreto" : ""}`}
+              aria-pressed={selectedOption === option.id}
               className={`flex flex-col items-center justify-center rounded-2xl border-2 font-black italic uppercase transition-all duration-300 ${statusClass} active:scale-95 group relative overflow-hidden`}
             >
               {/* Background Icon Watermark */}

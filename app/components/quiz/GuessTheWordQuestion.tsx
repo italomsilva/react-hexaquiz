@@ -4,6 +4,7 @@ import { Question } from "@/app/types/quiz";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import Image from "next/image";
+import { safeDecodeBase64 } from "@/app/utils/crypto";
 
 interface GuessTheWordQuestionProps {
   question: Question;
@@ -25,10 +26,7 @@ export function GuessTheWordQuestion({
   const [inputValue, setInputValue] = useState("");
   
   // Descriptografa o gabarito prévio (Mock de Base64) só pra desenhar o número de caixas e validar length
-  let decodedLocalAnswer = question.answer.toUpperCase();
-  try {
-    decodedLocalAnswer = decodeURIComponent(atob(question.answer)).toUpperCase();
-  } catch(e) {}
+  const decodedLocalAnswer = safeDecodeBase64(question.answer).toUpperCase();
   
   const targetAnswerLength = decodedLocalAnswer.length;
   // Apenas revelamos totalmente na UI se isAnswered && correctAnswer estiver disponível
@@ -118,6 +116,7 @@ export function GuessTheWordQuestion({
             return (
               <div
                 key={index}
+                aria-label={`Letra ${index + 1}: ${isAnswered ? (selectedOption?.toUpperCase() || "")[index] : inputValue[index] || "Vazio"}`}
                 className={`w-10 h-12 flex items-center justify-center border-b-4 rounded-t-lg font-black text-xl transition-all duration-200 ${borderColor} ${textColor} ${bg} ${!isAnswered && index === inputValue.length ? "animate-pulse" : ""}`}
               >
                 {isAnswered ? (selectedOption?.toUpperCase() || "")[index] || "" : inputValue[index] || ""}
@@ -138,6 +137,7 @@ export function GuessTheWordQuestion({
                   className="w-full bg-surface border-2 border-border-standard focus:border-primary rounded-xl p-4 text-center font-bold text-lg outline-none transition-all uppercase tracking-[0.5em]"
                   placeholder="DIGITE AQUI..."
                   maxLength={targetAnswerLength}
+                  aria-label="Digite sua resposta"
                 />
                 {inputValue.length === targetAnswerLength && (
                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-primary animate-bounce">

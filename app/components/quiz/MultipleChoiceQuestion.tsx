@@ -57,6 +57,8 @@ export function MultipleChoiceQuestion({
               key={option.id}
               onClick={() => onSelect(option.id)}
               disabled={isAnswered}
+              aria-label={`${option.text}${isAnswered && correctAnswer === option.id ? " - Correto" : isAnswered && selectedOption === option.id ? " - Incorreto" : ""}`}
+              aria-pressed={selectedOption === option.id}
               className={`group relative flex flex-col w-full p-3 rounded-xl border-2 font-bold transition-all duration-200 ${statusClass} active:scale-[0.98] ${
                 hasOptionImages ? "items-center text-center space-y-3" : "text-left"
               }`}
@@ -65,7 +67,7 @@ export function MultipleChoiceQuestion({
                 <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-surface-elevated">
                   <Image
                     src={option.image}
-                    alt={option.text}
+                    alt={option.text || "Option"}
                     fill
                     className="object-cover"
                   />

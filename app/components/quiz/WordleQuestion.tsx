@@ -4,6 +4,7 @@ import { Question } from "@/app/types/quiz";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/Button";
 import Image from "next/image";
+import { safeDecodeBase64 } from "@/app/utils/crypto";
 
 interface WordleQuestionProps {
   question: Question;
@@ -22,10 +23,7 @@ export function WordleQuestion({
   correctAnswer,
   onSelect,
 }: WordleQuestionProps) {
-  let decodedLocalAnswer = question.answer.toUpperCase();
-  try {
-    decodedLocalAnswer = decodeURIComponent(atob(question.answer)).toUpperCase();
-  } catch(e) {}
+  const decodedLocalAnswer = safeDecodeBase64(question.answer).toUpperCase();
 
   const targetWord = decodedLocalAnswer;
   const wordLength = targetWord.length;
@@ -136,6 +134,7 @@ export function WordleQuestion({
             return (
               <div
                 key={`${rowIndex}-${colIndex}`}
+                aria-label={`Linha ${rowIndex + 1}, Coluna ${colIndex + 1}: ${letter || "Vazio"}${status !== "empty" ? `, Status: ${status}` : ""}`}
                 className={`w-12 h-12 flex items-center justify-center border-2 rounded-lg text-2xl font-black transition-all duration-300 ${
                   statusStyles[status]
                 } ${isCurrentRow && letter ? "border-primary scale-110" : ""}`}
@@ -166,6 +165,7 @@ export function WordleQuestion({
                 <button
                   key={key}
                   onClick={() => handleKeyPress(key)}
+                  aria-label={key === "⌫" ? "Apagar" : key}
                   className={`
                     ${isSpecial ? "px-4 text-xs" : "flex-1"} 
                     h-12 rounded-lg font-bold transition-all active:scale-95

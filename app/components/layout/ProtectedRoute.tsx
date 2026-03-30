@@ -3,6 +3,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { LoadingScreen } from "../ui/LoadingScreen";
 
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -15,12 +16,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-primary font-bold tracking-widest animate-pulse">CARREGANDO...</p>
-      </div>
-    );
+    return <LoadingScreen message="CARREGANDO SESSÃO..." />;
   }
 
   if (!isAuthenticated) {

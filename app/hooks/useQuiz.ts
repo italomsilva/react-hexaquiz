@@ -14,6 +14,7 @@ export const useQuiz = () => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
@@ -25,6 +26,7 @@ export const useQuiz = () => {
         setCurrentQuestionIndex(data.session.currentIndex);
         setScore(data.session.score);
         setIsFinished(data.session.isFinished);
+        setCorrectAnswersCount(data.session.correctCount || 0);
       }
       setIsLoading(false);
     });
@@ -48,6 +50,7 @@ export const useQuiz = () => {
 
     if (result.correct) {
       setScore((prev) => prev + result.points_earned);
+      setCorrectAnswersCount(prev => prev + 1);
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
     } else if (isGuessTheWord && nextAttempt >= 5) {
@@ -87,6 +90,7 @@ export const useQuiz = () => {
     setIsAnswered(false);
     setScore(0);
     setIsFinished(false);
+    setCorrectAnswersCount(0);
     setAttempts(0);
     if (user) {
       QuizRepository.advanceSession(user.login, 0, false);
@@ -100,6 +104,7 @@ export const useQuiz = () => {
     correctAnswer,
     isAnswered,
     score,
+    correctAnswersCount,
     attempts,
     isFinished,
     isLoading,

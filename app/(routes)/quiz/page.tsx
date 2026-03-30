@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/Button";
 import Link from "next/link";
 import { useQuiz } from "@/app/hooks/useQuiz";
 import { QuestionRenderer } from "@/app/components/quiz/QuestionRenderer";
+import { LoadingScreen } from "@/app/components/ui/LoadingScreen";
 
 export default function QuizPage() {
   const {
@@ -14,6 +15,7 @@ export default function QuizPage() {
     correctAnswer,
     isAnswered,
     score,
+    correctAnswersCount,
     attempts,
     isFinished,
     isLoading,
@@ -29,10 +31,9 @@ export default function QuizPage() {
       <ProtectedRoute>
         <div className="min-h-screen bg-background flex flex-col">
           <Header />
-          <main className="flex-1 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-6 text-primary font-bold tracking-widest animate-pulse">CARREGANDO PARTIDA...</p>
-          </main>
+          <div className="flex-1 flex flex-col relative">
+            <LoadingScreen message="CARREGANDO PARTIDA..." />
+          </div>
         </div>
       </ProtectedRoute>
     );
@@ -51,10 +52,19 @@ export default function QuizPage() {
               <p className="text-2xl font-bold">Quiz finalizado com sucesso.</p>
             </div>
 
-            <div className="w-full max-w-sm p-8 rounded-2xl bg-surface border border-primary/20 shadow-xl">
-              <div className="text-foreground/40 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
-              <div className="text-6xl font-black text-primary">{score}</div>
-              <div className="text-primary font-bold tracking-widest mt-1">XP TOTAL</div>
+            <div className="w-full max-w-sm space-y-4">
+              <div className="p-8 rounded-2xl bg-surface border border-primary/20 shadow-xl">
+                <div className="text-foreground/40 text-sm font-medium mb-2 uppercase tracking-widest">Sua pontuação</div>
+                <div className="text-6xl font-black text-primary">{score}</div>
+                <div className="text-primary font-bold tracking-widest mt-1">XP TOTAL</div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-surface-elevated border border-border-subtle flex justify-between items-center">
+                <span className="font-bold text-foreground/60 uppercase text-xs tracking-widest">Desempenho</span>
+                <span className="text-xl font-black italic">
+                   {correctAnswersCount} <span className="text-sm font-bold text-foreground/40">/ {totalQuestions}</span>
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-col w-full max-w-sm gap-4">
