@@ -47,7 +47,7 @@ export default function HomePage() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-2xl font-black italic tracking-tighter">QUIZ DIÁRIO</h3>
-                <p className="text-gray-400 text-sm font-medium">Responda 10 perguntas rápidas e suba no ranking!</p>
+                <p className="text-gray-400 text-sm font-medium">Responda aos desafios do dia e suba no ranking!</p>
               </div>
               <Link href="/quiz" className="w-full">
                 <Button fullWidth size="lg">JOGAR AGORA</Button>

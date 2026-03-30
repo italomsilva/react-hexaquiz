@@ -6,6 +6,7 @@ import Image from "next/image";
 interface MultipleChoiceQuestionProps {
   question: Question;
   selectedOption: string | null;
+  correctAnswer: string | null;
   isAnswered: boolean;
   onSelect: (optionId: string) => void;
 }
@@ -13,6 +14,7 @@ interface MultipleChoiceQuestionProps {
 export function MultipleChoiceQuestion({
   question,
   selectedOption,
+  correctAnswer,
   isAnswered,
   onSelect,
 }: MultipleChoiceQuestionProps) {
@@ -38,8 +40,8 @@ export function MultipleChoiceQuestion({
         {question.options.map((option) => {
           let statusClass = "bg-surface border-border-standard text-foreground";
 
-          if (isAnswered) {
-            if (option.id === question.answer) {
+          if (isAnswered && correctAnswer) {
+            if (option.id === correctAnswer) {
               statusClass = "bg-green-500/10 border-green-500 text-green-500 ring-2 ring-green-500/20";
             } else if (option.id === selectedOption) {
               statusClass = "bg-red-500/10 border-red-500 text-red-500 ring-2 ring-red-500/20";
@@ -72,7 +74,7 @@ export function MultipleChoiceQuestion({
               
               <div className="flex items-center justify-between w-full">
                 <span className={hasOptionImages ? "w-full" : ""}>{option.text}</span>
-                {!hasOptionImages && isAnswered && option.id === question.answer && (
+                {!hasOptionImages && isAnswered && correctAnswer && option.id === correctAnswer && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -87,9 +89,9 @@ export function MultipleChoiceQuestion({
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 )}
-                {!hasOptionImages && isAnswered &&
+                {!hasOptionImages && isAnswered && correctAnswer &&
                   option.id === selectedOption &&
-                  option.id !== question.answer && (
+                  option.id !== correctAnswer && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -107,10 +109,9 @@ export function MultipleChoiceQuestion({
                   )}
               </div>
 
-              {/* Icon Overlay for Grid layout when answered */}
-              {hasOptionImages && isAnswered && (
+              {hasOptionImages && isAnswered && correctAnswer && (
                 <div className="absolute top-2 right-2">
-                   {option.id === question.answer ? (
+                   {option.id === correctAnswer ? (
                      <div className="bg-green-500 text-white rounded-full p-1 shadow-lg animate-in zoom-in">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                      </div>

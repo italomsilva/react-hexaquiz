@@ -8,12 +8,14 @@ import { Button } from "../ui/Button";
 interface OrderingQuestionProps {
   question: Question;
   isAnswered: boolean;
+  correctAnswer: string | null;
   onSelect: (answer: string) => void;
 }
 
 export function OrderingQuestion({
   question,
   isAnswered,
+  correctAnswer,
   onSelect,
 }: OrderingQuestionProps) {
   const [items, setItems] = useState<Option[]>([]);
@@ -43,8 +45,7 @@ export function OrderingQuestion({
     onSelect(orderedIds);
   };
 
-  const isCorrect = items.map(item => item.id).join(",") === question.answer;
-
+  // Avaliação do render depende estritamente do prop `correctAnswer` do servidor após submissão!
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
        {/* Question Image */}
@@ -68,14 +69,17 @@ export function OrderingQuestion({
         <div className="space-y-3">
           {items.map((item, index) => {
             let statusClass = "bg-surface border-border-standard";
+            let correctIcon = null;
             
-            if (isAnswered) {
-              const correctOrder = question.answer.split(",");
+            if (isAnswered && correctAnswer) {
+              const correctOrder = correctAnswer.split(",");
               const correctIdAtIndex = correctOrder[index];
               if (item.id === correctIdAtIndex) {
                  statusClass = "bg-green-500/10 border-green-500 text-green-500";
+                 correctIcon = <span className="ml-2 font-black">✓</span>;
               } else {
                  statusClass = "bg-red-500/10 border-red-500 text-red-500";
+                 correctIcon = <span className="ml-2 font-black">✕</span>;
               }
             }
 
@@ -88,8 +92,9 @@ export function OrderingQuestion({
                    {index + 1}
                 </div>
 
-                <div className="flex-1 font-bold">
+                <div className="flex-1 font-bold flex items-center">
                    {item.text}
+                   {correctIcon}
                 </div>
 
                 {!isAnswered && (
@@ -129,11 +134,11 @@ export function OrderingQuestion({
         </Button>
       )}
 
-      {isAnswered && (
+      {isAnswered && correctAnswer && (
          <div className="text-center p-4 bg-surface-elevated rounded-xl border border-primary/20 animate-in zoom-in">
            <p className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-2">Gabarito</p>
            <div className="space-y-1">
-             {question.answer.split(",").map((id, idx) => {
+             {correctAnswer.split(",").map((id, idx) => {
                const item = question.options.find(o => o.id === id);
                return (
                  <div key={id} className="text-sm font-black italic text-primary">

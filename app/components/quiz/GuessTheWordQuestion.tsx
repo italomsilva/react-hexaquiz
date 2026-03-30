@@ -8,6 +8,7 @@ import Image from "next/image";
 interface GuessTheWordQuestionProps {
   question: Question;
   selectedOption: string | null;
+  correctAnswer: string | null;
   isAnswered: boolean;
   onSelect: (answer: string) => void;
   attempts: number;
@@ -16,12 +17,22 @@ interface GuessTheWordQuestionProps {
 export function GuessTheWordQuestion({
   question,
   selectedOption,
+  correctAnswer,
   isAnswered,
   onSelect,
   attempts,
 }: GuessTheWordQuestionProps) {
   const [inputValue, setInputValue] = useState("");
-  const targetAnswer = question.answer.toUpperCase();
+  
+  // Descriptografa o gabarito prévio (Mock de Base64) só pra desenhar o número de caixas e validar length
+  let decodedLocalAnswer = question.answer.toUpperCase();
+  try {
+    decodedLocalAnswer = decodeURIComponent(atob(question.answer)).toUpperCase();
+  } catch(e) {}
+  
+  const targetAnswerLength = decodedLocalAnswer.length;
+  // Apenas revelamos totalmente na UI se isAnswered && correctAnswer estiver disponível
+  const finalAnswer = isAnswered && correctAnswer ? correctAnswer.toUpperCase() : decodedLocalAnswer;
 
   // Reset input when question changes
   useEffect(() => {
@@ -80,15 +91,15 @@ export function GuessTheWordQuestion({
 
         {/* Letter Slots Display */}
         <div className="flex flex-wrap justify-center gap-2">
-          {targetAnswer.split("").map((letter, index) => {
+          {finalAnswer.split("").map((letter, index) => {
             let borderColor = "border-border-standard";
             let textColor = "text-foreground";
             let bg = "bg-surface";
 
-            if (isAnswered) {
+            if (isAnswered && correctAnswer) {
               const fullInput = selectedOption?.toUpperCase() || "";
               const inputLetter = fullInput[index] || "";
-              const correctLetter = targetAnswer[index];
+              const correctLetter = correctAnswer.toUpperCase()[index];
 
               if (inputLetter === correctLetter) {
                 borderColor = "border-green-500";
@@ -123,12 +134,12 @@ export function GuessTheWordQuestion({
                   autoFocus
                   type="text"
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value.toUpperCase().slice(0, targetAnswer.length))}
+                  onChange={(e) => setInputValue(e.target.value.toUpperCase().slice(0, targetAnswerLength))}
                   className="w-full bg-surface border-2 border-border-standard focus:border-primary rounded-xl p-4 text-center font-bold text-lg outline-none transition-all uppercase tracking-[0.5em]"
                   placeholder="DIGITE AQUI..."
-                  maxLength={targetAnswer.length}
+                  maxLength={targetAnswerLength}
                 />
-                {inputValue.length === targetAnswer.length && (
+                {inputValue.length === targetAnswerLength && (
                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-primary animate-bounce">
                       ENTER
                    </div>
@@ -146,7 +157,7 @@ export function GuessTheWordQuestion({
         ) : (
           <div className="text-center space-y-2 animate-in slide-in-from-top-2">
              <div className="text-foreground/40 text-sm font-bold tracking-widest uppercase">Resposta Correta</div>
-             <div className="text-3xl font-black italic text-primary tracking-widest">{targetAnswer}</div>
+             <div className="text-3xl font-black italic text-primary tracking-widest">{finalAnswer}</div>
           </div>
         )}
       </div>

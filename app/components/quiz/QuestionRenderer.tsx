@@ -10,6 +10,7 @@ import { OrderingQuestion } from "./OrderingQuestion";
 interface QuestionRendererProps {
   question: Question;
   selectedOption: string | null;
+  correctAnswer: string | null;
   isAnswered: boolean;
   onSelect: (value: string) => void;
   attempts: number;
@@ -18,6 +19,7 @@ interface QuestionRendererProps {
 export function QuestionRenderer({
   question,
   selectedOption,
+  correctAnswer,
   isAnswered,
   onSelect,
   attempts,
@@ -28,6 +30,7 @@ export function QuestionRenderer({
         <MultipleChoiceQuestion
           question={question}
           selectedOption={selectedOption}
+          correctAnswer={correctAnswer}
           isAnswered={isAnswered}
           onSelect={onSelect}
         />
@@ -37,6 +40,7 @@ export function QuestionRenderer({
         <TrueFalseQuestion
           question={question}
           selectedOption={selectedOption}
+          correctAnswer={correctAnswer}
           isAnswered={isAnswered}
           onSelect={onSelect}
         />
@@ -46,6 +50,7 @@ export function QuestionRenderer({
         <GuessTheWordQuestion
           question={question}
           selectedOption={selectedOption}
+          correctAnswer={correctAnswer}
           isAnswered={isAnswered}
           onSelect={onSelect}
           attempts={attempts}
@@ -56,6 +61,7 @@ export function QuestionRenderer({
         <WordleQuestion
           question={question}
           isAnswered={isAnswered}
+          correctAnswer={correctAnswer}
           onSelect={onSelect}
         />
       );
@@ -64,6 +70,7 @@ export function QuestionRenderer({
         <OrderingQuestion
           question={question}
           isAnswered={isAnswered}
+          correctAnswer={correctAnswer}
           onSelect={onSelect}
         />
       );

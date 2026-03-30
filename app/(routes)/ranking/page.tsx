@@ -4,33 +4,22 @@ import React, { useState } from "react";
 import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 
-interface RankingItem {
-  rank: number;
-  name: string;
-  points: number;
-  isCurrentUser?: boolean;
-}
-
-const WEEKLY_RANKING: RankingItem[] = [
-  { rank: 1, name: "Neymar Jr", points: 2500 },
-  { rank: 2, name: "Vinícius 7", points: 2350 },
-  { rank: 3, name: "Rodrygo10", points: 2200 },
-  { rank: 15, name: "Usuário Teste", points: 850, isCurrentUser: true },
-  { rank: 16, name: "Casemiro 5", points: 800 },
-];
-
-const GENERAL_RANKING: RankingItem[] = [
-  { rank: 1, name: "Pelé Eterno", points: 15000 },
-  { rank: 2, name: "Fenômeno 9", points: 14500 },
-  { rank: 3, name: "Gaúcho Art", points: 14200 },
-  { rank: 42, name: "Usuário Teste", points: 4500, isCurrentUser: true },
-  { rank: 43, name: "Endrick 9", points: 4400 },
-];
+import { RankingRepository, RankingItem } from "@/app/repositories/RankingRepository";
 
 export default function RankingPage() {
   const [activeTab, setActiveTab] = useState<"weekly" | "general">("weekly");
+  const [data, setData] = useState<RankingItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const data = activeTab === "weekly" ? WEEKLY_RANKING : GENERAL_RANKING;
+  React.useEffect(() => {
+    setIsLoading(true);
+    RankingRepository.getRanking(activeTab).then(res => {
+      setData(res);
+      setIsLoading(false);
+    });
+  }, [activeTab]);
+
+
 
   return (
     <ProtectedRoute>
@@ -63,33 +52,40 @@ export default function RankingPage() {
           </section>
 
           {/* Ranking List */}
-          <div className="space-y-3">
-            {data.map((item) => (
-              <div
-                key={item.rank}
-                className={`flex items-center justify-between p-4 rounded-xl border transition-all ${item.isCurrentUser
-                    ? "bg-primary/10 border-primary"
-                    : "bg-surface border-border-subtle"
-                  }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic ${item.rank === 1 ? "bg-yellow-500 text-background" :
-                      item.rank === 2 ? "bg-foreground/20 text-foreground" :
-                        item.rank === 3 ? "bg-amber-600 text-background" :
-                          "bg-surface-elevated text-foreground/40"
-                    }`}>
-                    {item.rank}
-                  </div>
-                  <span className={`font-bold ${item.isCurrentUser ? "text-primary" : "text-foreground"}`}>
-                    {item.name}
-                  </span>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="font-black text-foreground">{item.points}</span>
-                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-tighter">PONTOS</span>
-                </div>
+          <div className="space-y-3 relative min-h-[300px]">
+            {isLoading ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-primary font-bold text-xs uppercase tracking-widest mt-4">Carregando Classificação...</p>
               </div>
-            ))}
+            ) : (
+              data.map((item) => (
+                <div
+                  key={item.rank}
+                  className={`flex items-center justify-between p-4 rounded-xl border transition-all animate-in slide-in-from-bottom-2 duration-500 ${item.isCurrentUser
+                      ? "bg-primary/10 border-primary"
+                      : "bg-surface border-border-subtle"
+                    }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic ${item.rank === 1 ? "bg-yellow-500 text-background shadow-lg shadow-yellow-500/50" :
+                        item.rank === 2 ? "bg-foreground/20 text-foreground" :
+                          item.rank === 3 ? "bg-amber-600 text-background" :
+                            "bg-surface-elevated text-foreground/40"
+                      }`}>
+                      {item.rank}
+                    </div>
+                    <span className={`font-bold ${item.isCurrentUser ? "text-primary" : "text-foreground"}`}>
+                      {item.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="font-black text-foreground">{item.points}</span>
+                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-tighter">PONTOS</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="mt-auto pt-6 text-center">

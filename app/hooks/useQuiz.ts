@@ -1,78 +1,109 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Question, QuestionType } from "@/app/types/quiz";
+import { QuizRepository } from "@/app/repositories/QuizRepository";
+import { useAuth } from "@/app/context/AuthContext";
 
-export const useQuiz = (questions: Question[]) => {
+export const useQuiz = () => {
+  const { user } = useAuth();
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const [attempts, setAttempts] = useState(0); // Current question attempts
+  const [attempts, setAttempts] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isValidating, setIsValidating] = useState(false);
+
+  useEffect(() => {
+    QuizRepository.getDailyQuiz().then(data => {
+      setQuestions(data.questions);
+      if (data.session) {
+        setCurrentQuestionIndex(data.session.currentIndex);
+        setScore(data.session.score);
+        setIsFinished(data.session.isFinished);
+      }
+      setIsLoading(false);
+    });
+  }, []);
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  const handleOptionSelect = (optionId: string) => {
-    if (isAnswered) return;
+  const handleOptionSelect = async (answer: string) => {
+    if (isAnswered || isValidating) return;
 
-    const isCorrect = optionId === currentQuestion.answer;
+    setIsValidating(true);
     const isGuessTheWord = currentQuestion.type === QuestionType.GUESS_THE_WORD;
+    const nextAttempt = isGuessTheWord ? attempts + 1 : 1;
+    
+    setAttempts(nextAttempt);
+    setSelectedOption(answer);
 
-    if (isGuessTheWord) {
-      const nextAttempt = attempts + 1;
-      setAttempts(nextAttempt);
+    const result = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt);
 
-      if (isCorrect) {
-        // Calculate points based on attempts (20% reduction per fail)
-        const multiplier = Math.max(0, 1 - (nextAttempt - 1) * 0.2);
-        const earnedPoints = Math.round(currentQuestion.points * multiplier);
-        setScore((prev) => prev + earnedPoints);
-        setSelectedOption(optionId);
-        setIsAnswered(true);
-      } else if (nextAttempt >= 5) {
-        // Failed after 5 attempts
-        setSelectedOption(optionId);
-        setIsAnswered(true);
-      }
-    } else {
-      // Multiple choice, True/False, Wordle (standard logic)
-      setSelectedOption(optionId);
+    setIsValidating(false);
+
+    if (result.correct) {
+      setScore((prev) => prev + result.points_earned);
+      setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
-
-      if (isCorrect) {
-        setScore((prev) => prev + currentQuestion.points);
-      }
+    } else if (isGuessTheWord && nextAttempt >= 5) {
+      setCorrectAnswer(result.correct_answer_payload);
+      setIsAnswered(true);
+    } else if (!isGuessTheWord) {
+      // Multiple choice falha na hora
+      setCorrectAnswer(result.correct_answer_payload);
+      setIsAnswered(true);
     }
   };
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
       setSelectedOption(null);
+      setCorrectAnswer(null);
       setIsAnswered(false);
       setAttempts(0);
+      
+      if (user) {
+        QuizRepository.advanceSession(user.login, nextIndex, false);
+      }
     } else {
       setIsFinished(true);
+      if (user) {
+        QuizRepository.advanceSession(user.login, currentQuestionIndex, true);
+      }
     }
   };
 
   const resetQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedOption(null);
+    setCorrectAnswer(null);
     setIsAnswered(false);
     setScore(0);
     setIsFinished(false);
     setAttempts(0);
+    if (user) {
+      QuizRepository.advanceSession(user.login, 0, false);
+    }
   };
 
   return {
+    questions,
     currentQuestionIndex,
     selectedOption,
+    correctAnswer,
     isAnswered,
     score,
     attempts,
     isFinished,
+    isLoading,
+    isValidating,
     currentQuestion,
     totalQuestions: questions.length,
     handleOptionSelect,

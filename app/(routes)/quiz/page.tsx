@@ -4,7 +4,6 @@ import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 import { Button } from "@/app/components/ui/Button";
 import Link from "next/link";
-import { QUESTIONS } from "@/app/constants/questions";
 import { useQuiz } from "@/app/hooks/useQuiz";
 import { QuestionRenderer } from "@/app/components/quiz/QuestionRenderer";
 
@@ -12,15 +11,32 @@ export default function QuizPage() {
   const {
     currentQuestionIndex,
     selectedOption,
+    correctAnswer,
     isAnswered,
     score,
     attempts,
     isFinished,
+    isLoading,
+    isValidating,
     currentQuestion,
     totalQuestions,
     handleOptionSelect,
     handleNext,
-  } = useQuiz(QUESTIONS);
+  } = useQuiz();
+
+  if (isLoading) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen bg-background flex flex-col">
+          <Header />
+          <main className="flex-1 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-6 text-primary font-bold tracking-widest animate-pulse">CARREGANDO PARTIDA...</p>
+          </main>
+        </div>
+      </ProtectedRoute>
+    );
+  }
 
   if (isFinished) {
     return (
@@ -88,6 +104,7 @@ export default function QuizPage() {
               key={currentQuestion.id}
               question={currentQuestion}
               selectedOption={selectedOption}
+              correctAnswer={correctAnswer}
               isAnswered={isAnswered}
               onSelect={handleOptionSelect}
               attempts={attempts}
@@ -98,12 +115,16 @@ export default function QuizPage() {
             <Button
               fullWidth
               size="lg"
-              disabled={!isAnswered}
+              disabled={!isAnswered || isValidating}
               onClick={handleNext}
               className={!isAnswered ? "opacity-0 pointer-events-none" : "animate-in slide-in-from-bottom-2"}
             >
               {currentQuestionIndex === totalQuestions - 1 ? "FINALIZAR" : "PRÓXIMA"}
             </Button>
+            
+            {isValidating && (
+              <p className="text-center font-bold text-primary mt-2 animate-pulse text-xs uppercase tracking-widest">Avaliando resposta...</p>
+            )}
           </div>
         </main>
       </div>

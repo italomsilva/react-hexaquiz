@@ -1,15 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 import { Button } from "@/app/components/ui/Button";
 import { useAuth } from "@/app/context/AuthContext";
 import { useTheme } from "@/app/context/ThemeContext";
+import { AuthRepository } from "@/app/repositories/AuthRepository";
 
 export default function ProfilePage() {
   const theme = useTheme();
   const { user, logout } = useAuth();
+  const [stats, setStats] = useState({ quizzes_played: 0, accuracy: 0 });
+
+  useEffect(() => {
+    if (user) {
+      AuthRepository.getProfile(user.id).then(res => {
+        if (res?.stats) {
+          setStats(res.stats);
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <ProtectedRoute>
@@ -38,6 +50,10 @@ export default function ProfilePage() {
             <div className="text-center">
               <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>{user?.email.split('@')[0]}</h2>
               <p className="text-foreground/60 text-sm font-medium">{user?.email}</p>
+              <div className="mt-4 p-3 bg-surface-elevated rounded-xl border border-border-subtle inline-block min-w-[120px]">
+                <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">XP Acumulado</div>
+                <div className="text-xl font-black italic text-neon text-shadow-glow">{user?.points || 0}</div>
+              </div>
             </div>
           </section>
 
@@ -45,11 +61,11 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-foreground/40 uppercase tracking-widest">Partidas</div>
-                <div className="text-2xl font-black italic text-primary">124</div>
+                <div className="text-2xl font-black italic text-primary">{stats.quizzes_played}</div>
               </div>
               <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-foreground/40 uppercase tracking-widest">Precisão</div>
-                <div className="text-2xl font-black italic text-primary">82%</div>
+                <div className="text-2xl font-black italic text-primary">{stats.accuracy}%</div>
               </div>
             </div>
 

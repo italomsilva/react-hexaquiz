@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { User, AuthContextType } from "../types/auth";
+import { AuthRepository } from "../repositories/AuthRepository";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -26,62 +27,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (loginUser: string, password: string): Promise<boolean> => {
-    // Busca usuários cadastrados na simulação
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    let users = [];
-    if (savedUsersStr) {
-      try {
-        users = JSON.parse(savedUsersStr);
-      } catch (e) {
-        users = [];
-      }
-    }
-
-    // 1. Verificação do usuário padrão (Fallback)
-    if (loginUser === "teste" && password === "12345678") {
-      const mockUser: User = { name: "Usuário Teste", email: "teste@gmail.com", login: "teste" };
-      setUser(mockUser);
-      localStorage.setItem("quiz_user", JSON.stringify(mockUser));
-      return true;
-    }
-
-    // 2. Busca nos usuários cadastrados dinamicamente
-    const foundUser = users.find((u: any) => u.login === loginUser && u.password === password);
-    if (foundUser) {
-      const userData: User = { name: foundUser.name, email: foundUser.email, login: foundUser.login };
+    const userData = await AuthRepository.login(loginUser, password);
+    if (userData) {
       setUser(userData);
       localStorage.setItem("quiz_user", JSON.stringify(userData));
       return true;
     }
-
     return false;
   };
 
   const register = async (name: string, email: string, loginUser: string, password: string): Promise<boolean> => {
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    let users = [];
-    if (savedUsersStr) {
-      try {
-        users = JSON.parse(savedUsersStr);
-      } catch (e) {
-        users = [];
-      }
+    const userData = await AuthRepository.register(name, email, loginUser, password);
+    if (userData) {
+      // Logar o usuário automaticamente
+      setUser(userData);
+      localStorage.setItem("quiz_user", JSON.stringify(userData));
+      return true;
     }
-
-    // Verifica se login ou email já existe
-    if (users.find((u: any) => u.login === loginUser || u.email === email)) {
-      return false; // Usuário já existe
-    }
-
-    const newUser = { name, email, login: loginUser, password };
-    users.push(newUser);
-    localStorage.setItem("quiz_users_db", JSON.stringify(users));
-
-    // Logar o usuário automaticamente
-    const userData: User = { name, email, login: loginUser };
-    setUser(userData);
-    localStorage.setItem("quiz_user", JSON.stringify(userData));
-    return true;
+    return false;
   };
 
   const logout = () => {

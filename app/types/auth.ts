@@ -1,7 +1,9 @@
 export interface User {
+  id: string;
   name: string;
   email: string;
   login: string;
+  points: number;
 }
 
 export interface AuthContextType {

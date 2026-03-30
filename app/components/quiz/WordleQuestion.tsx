@@ -8,6 +8,7 @@ import Image from "next/image";
 interface WordleQuestionProps {
   question: Question;
   isAnswered: boolean;
+  correctAnswer: string | null;
   onSelect: (answer: string) => void;
 }
 
@@ -18,9 +19,15 @@ type LetterStatus = "correct" | "present" | "absent" | "empty";
 export function WordleQuestion({
   question,
   isAnswered,
+  correctAnswer,
   onSelect,
 }: WordleQuestionProps) {
-  const targetWord = question.answer.toUpperCase();
+  let decodedLocalAnswer = question.answer.toUpperCase();
+  try {
+    decodedLocalAnswer = decodeURIComponent(atob(question.answer)).toUpperCase();
+  } catch(e) {}
+
+  const targetWord = decodedLocalAnswer;
   const wordLength = targetWord.length;
 
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -174,10 +181,10 @@ export function WordleQuestion({
         ))}
       </div>
 
-      {isAnswered && (
+      {isAnswered && correctAnswer && (
         <div className="text-center animate-in slide-in-from-top-4">
            <p className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-1">A palavra era</p>
-           <p className="text-4xl font-black italic text-primary tracking-[0.2em]">{targetWord}</p>
+           <p className="text-4xl font-black italic text-primary tracking-[0.2em]">{correctAnswer.toUpperCase()}</p>
         </div>
       )}
     </div>
