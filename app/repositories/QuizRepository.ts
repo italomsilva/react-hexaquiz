@@ -32,14 +32,14 @@ export class QuizRepository {
        login = JSON.parse(loggedUserStr).login;
     }
 
-    const sessionsStr = localStorage.getItem("quiz_sessions_db");
+    const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
     let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
     
     let userSession = allSessions[login];
     if (!userSession) {
        userSession = { currentIndex: 0, score: 0, isFinished: false };
        allSessions[login] = userSession;
-       localStorage.setItem("quiz_sessions_db", JSON.stringify(allSessions));
+       localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
     }
 
     return { questions: sanitizedQuestions, session: userSession };
@@ -89,24 +89,24 @@ export class QuizRepository {
 
       // Adiciona na pontuação da Sessão atual também
       const login = activeUser.login;
-      const sessionsStr = localStorage.getItem("quiz_sessions_db");
+      const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
       let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
       let userSession = allSessions[login] || { currentIndex: 0, score: 0, isFinished: false };
       
       userSession.score += earnedPoints;
       allSessions[login] = userSession;
-      localStorage.setItem("quiz_sessions_db", JSON.stringify(allSessions));
+      localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
     }
 
     // Record activity score (simplified analytics)
-    const activities = JSON.parse(localStorage.getItem("quiz_activities_db") || "[]");
+    const activities = JSON.parse(localStorage.getItem("answers_log_db") || "[]");
     activities.push({
       question_id: questionId,
       correct: isCorrect,
       points: earnedPoints,
       date: new Date().toISOString()
     });
-    localStorage.setItem("quiz_activities_db", JSON.stringify(activities));
+    localStorage.setItem("answers_log_db", JSON.stringify(activities));
 
     return {
       correct: isCorrect,
@@ -118,13 +118,13 @@ export class QuizRepository {
 
   // Novo método para o front avisar que avançou no ponteiro do Quiz para salvar o progresso
   static async advanceSession(login: string, newIndex: number, isFinished: boolean) {
-     const sessionsStr = localStorage.getItem("quiz_sessions_db");
+     const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
      let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
      let userSession = allSessions[login] || { currentIndex: 0, score: 0, isFinished: false };
      
      userSession.currentIndex = newIndex;
      userSession.isFinished = isFinished;
      allSessions[login] = userSession;
-     localStorage.setItem("quiz_sessions_db", JSON.stringify(allSessions));
+     localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
   }
 }

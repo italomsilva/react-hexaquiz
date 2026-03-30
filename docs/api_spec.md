@@ -41,15 +41,19 @@ Alternativas associadas às questões (no caso do tipo múltipla escolha e orden
 | `text` | VARCHAR(255) | NULL | Texto da alternativa (se houver). |
 | `image_url` | VARCHAR(500) | NULL | URL da imagem da alternativa (se houver). |
 
-### 4. `user_activities` (Logs de Partida)
-Armazena histórico de quizzes feitos para gerar estatísticas e evitar que jogue mais de uma vez por dia.
+### 4. `daily_quiz_attempts` (Progresso e Histórico do Quiz)
+Combina o log de atividade e o controle de sessão. Como existe apenas 1 quiz oficial por dia, esta tabela centraliza o estado em tempo real do usuário na partida atual e serve para sempre como registro histórico das pontuações nos dias em que ele participou. Uma restrição `UNIQUE (user_id, quiz_date)` deve ser aplicada para evitar duplicação.
 
 | Coluna | Tipo | Restrições | Descrição |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador da partida registrada. |
-| `user_id` | UUID | FOREIGN KEY | Referência à tabela `users`. |
-| `points_earned` | INT | NOT NULL | Pontos adquiridos nesta partida. |
-| `played_at` | TIMESTAMP | DEFAULT NOW() | Quando o usuário finalizou o quiz. |
+| `user_id` | UUID | FOREIGN KEY, UNIQUE* | Referência ao usuário participante. |
+| `quiz_date` | DATE | NOT NULL, UNIQUE* | A data do calendário em que o quiz esteve ativo. |
+| `current_index` | INT | DEFAULT 0 | Posição ou índice da questão atual (retomada). |
+| `points_earned` | INT | DEFAULT 0 | Pontos totais adquiridos nesta rodada. |
+| `is_finished` | BOOLEAN | DEFAULT FALSE | Bloqueia novas tentativas se for igual a `true`. |
+| `started_at` | TIMESTAMP | DEFAULT NOW() | Momento de visualização da primeira pergunta. |
+| `completed_at` | TIMESTAMP | NULL | Momento em que a última pergunta foi finalizada. |
 
 ---
 
@@ -137,6 +141,12 @@ Todos os endpoints (exceto Auth) assumem envio do cabeçalho de autenticação:
 }
 ```
 
+**O que o Back-end deve fazer (Regra de Negócio):**
+1. Identificar o usuário através do Token (`Bearer <TKN>`).
+2. Consultar o banco de dados na tabela `questions` procurando as perguntas do Quiz do Dia.
+3. Fazer a varredura nas perguntas: Se a pergunta for Texto/Wordle, criptografar a coluna `answer` real usando Base64. Se for Múltipla Escolha/Ordem, substituir a propriedade `answer` pela string literial `"HIDDEN"`.
+4. Consultar a tabela `daily_quiz_attempts` usando o `user_id` e a data de hoje. Se o usuário nunca tiver aberto o quiz hoje, criar um novo registro no banco e retornar um payload zerado de "session". Se encontrar o registro, retornar os dados atuais no mesmo payload de "session", permitindo que o front-end retome na questão interrompida e proíba jogar caso `is_finished = true`.
+
 #### 🔹 `POST /api/quiz/answer`
 **Descrição:** Envia a resposta de uma única questão em tempo real para o backend avaliar. O usuário recebe o feedback imediato se acertou e quantos pontos somou, vital para o fluxo das questões que não admitem repetição sem saber do resultado anterior.
 **Entrada (Body/JSON):**
@@ -161,6 +171,13 @@ Todos os endpoints (exceto Auth) assumem envio do cabeçalho de autenticação:
 ```
 *(Se estiver errado, `correct` retornará `false`. Independentemente disso, `correct_answer_payload` DEVE vir preenchido com a resposta certa para o componente do React se pintar apropriadamente após a submissão).*
 
+**O que o Back-end deve fazer (Regra de Negócio):**
+1. O backend busca o `question_id` no banco de dados e compara o campo de entrada `answer` com a coluna `answer` verdadeira na tabela `questions`.
+2. Calcula os pontos: Se tiver acerto limpo em Múltipla escolha dá o máximo de pontos. Se a requisição pertencer a "Adivinhe a Palavra", reduz-se a penalidade matemática conforme o número de `attempts` (tentativas) gasto chegue até 5.
+3. Busca o registro de hoje desta rodada do usuário na `daily_quiz_attempts` e ATUALIZA a pontuação (`points_earned`) somando-a à base. Transações simultâneas de index podem ser ignoradas aqui se o Frontend ditar via Advance.
+4. (Opcional) Cria uma micro-tabela transacional como `answers_log` vinculada a esta Attempt, caso você queira extrair métricas de fraude em tempo gasto.
+5. Devolve o gabarito original no JSON final em `correct_answer_payload` contendo o ID certo ou a palavra em texto puro (Sem criptografia/Hidden).
+
 #### 🔹 `POST /api/quiz/session/advance`
 **Descrição:** Salva o progresso de navegação caso o usuário saia antes de terminar o quiz diário.
 **Entrada (Body/JSON):**
@@ -175,6 +192,11 @@ Todos os endpoints (exceto Auth) assumem envio do cabeçalho de autenticação:
 { "status": "success" }
 ```
 
+**O que o Back-end deve fazer (Regra de Negócio):**
+1. O frontend chama essa rota inteiramente focado em salvar o "avanço de página/checkpoint". 
+2. Realiza o `UPDATE` no registro da `daily_quiz_attempts` do dia atual: definindo `current_index` = `newIndex`.
+3. Se `is_finished` vier verdadeiro, sela o quiz: preenche `completed_at` com o timestamp atual e `is_finished = true`.
+4. Uma transação no banco deve pegar os `points_earned` totais gerados hoje e adicionar na coluna principal `points` do ranking da tabela primária `users`, concluindo o ciclo de pontuação do jogador.
 
 ### 3. Ranking e Perfil
 

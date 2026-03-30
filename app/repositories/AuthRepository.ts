@@ -57,7 +57,7 @@ export class AuthRepository {
     // In a real app we would use user's JWT token server-side or pass the header
     // Here we will just look at localStorage to fetch matches stats
     
-    const savedActivities = localStorage.getItem("quiz_activities_db");
+    const savedActivities = localStorage.getItem("answers_log_db");
     const activities = savedActivities ? JSON.parse(savedActivities) : [];
     
     return {
