@@ -6,10 +6,12 @@ export enum QuestionType {
   ORDERING = "ordering",
 }
 
+
 export interface Option {
   id: string;
-  text: string;
+  text?: string;
   image?: string;
+  questionId: string;
 }
 
 export interface Question {
@@ -17,7 +19,14 @@ export interface Question {
   title: string;
   type: QuestionType;
   answer: string;
-  options: Option[];
   image?: string;
+  points: number;
+  options: Option[];
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
   points: number;
 }

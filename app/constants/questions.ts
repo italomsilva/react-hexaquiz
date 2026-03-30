@@ -9,10 +9,10 @@ export const QUESTIONS: Question[] = [
     answer: '0',
     points: 100,
     options: [
-      { id: '0', text: "Opção 1", image: "/images/bg-home.png" },
-      { id: '1', text: "Opção 2", image: "/images/bg-home.png" },
-      { id: '2', text: "Opção 3", image: "/images/bg-home.png" },
-      { id: '3', text: "Opção 4", image: "/images/bg-home.png" }
+      { id: '0', text: "Opção 1", image: "/images/bg-home.png", questionId: "0" },
+      { id: '1', text: "Opção 2", image: "/images/bg-home.png", questionId: "0" },
+      { id: '2', text: "Opção 3", image: "/images/bg-home.png", questionId: "0" },
+      { id: '3', text: "Opção 4", image: "/images/bg-home.png", questionId: "0" }
     ],
   },
   {
@@ -22,10 +22,10 @@ export const QUESTIONS: Question[] = [
     answer: '2',
     points: 100,
     options: [
-      { id: '0', text: "Canadá" },
-      { id: '1', text: "Estados Unidos" },
-      { id: '2', text: "México" },
-      { id: '3', text: "Marrocos" }
+      { id: '0', text: "Canadá", questionId: "1" },
+      { id: '1', text: "Estados Unidos", questionId: "1" },
+      { id: '2', text: "México", questionId: "1" },
+      { id: '3', text: "Marrocos", questionId: "1" }
     ],
   },
   {
@@ -35,8 +35,8 @@ export const QUESTIONS: Question[] = [
     answer: '0',
     points: 50,
     options: [
-      { id: '0', text: "Verdadeiro" },
-      { id: '1', text: "Falso" }
+      { id: '0', text: "Verdadeiro", questionId: "2" },
+      { id: '1', text: "Falso", questionId: "2" }
     ],
   },
   {
@@ -46,7 +46,7 @@ export const QUESTIONS: Question[] = [
     answer: "AZTECA",
     points: 200,
     options: [
-      { id: 'hint', text: "Foi palco das finais de 1970 e 1986." }
+      { id: 'hint', text: "Foi palco das finais de 1970 e 1986.", questionId: "3" }
     ],
   },
   {
@@ -72,10 +72,10 @@ export const QUESTIONS: Question[] = [
     answer: '1',
     points: 100,
     options: [
-      { id: '0', text: "Europa" },
-      { id: '1', text: "América do Norte" },
-      { id: '2', text: "América do Sul" },
-      { id: '3', text: "Ásia" }
+      { id: '0', text: "Europa", questionId: "6" },
+      { id: '1', text: "América do Norte", questionId: "6" },
+      { id: '2', text: "América do Sul", questionId: "6" },
+      { id: '3', text: "Ásia", questionId: "6" }
     ],
   },
   {
@@ -93,10 +93,10 @@ export const QUESTIONS: Question[] = [
     answer: '3',
     points: 100,
     options: [
-      { id: '0', text: "Ottawa" },
-      { id: '1', text: "Montreal" },
-      { id: '2', text: "Quebec" },
-      { id: '3', text: "Toronto" }
+      { id: '0', text: "Ottawa", questionId: "8" },
+      { id: '1', text: "Montreal", questionId: "8" },
+      { id: '2', text: "Quebec", questionId: "8" },
+      { id: '3', text: "Toronto", questionId: "8" }
     ],
   },
   {
@@ -106,9 +106,9 @@ export const QUESTIONS: Question[] = [
     points: 200,
     answer: "usa,mexico,canada",
     options: [
-      { id: 'canada', text: "Canadá" },
-      { id: 'mexico', text: "México" },
-      { id: 'usa', text: "Estados Unidos" },
+      { id: 'canada', text: "Canadá", questionId: "9" },
+      { id: 'mexico', text: "México", questionId: "9" },
+      { id: 'usa', text: "Estados Unidos", questionId: "9" },
     ],
   }
 ];
