@@ -1,6 +1,7 @@
 import { delay } from "../utils/delay";
 import { QUESTIONS } from "../constants/questions";
-import { Question, Option } from "../types/quiz";
+import { Question, Option, QuestionType } from "../types/quiz";
+import { ApiResponse } from "../types/api";
 import { safeEncodeBase64 } from "../utils/crypto";
 
 export interface QuizSession {
@@ -11,13 +12,13 @@ export interface QuizSession {
 }
 
 export class QuizRepository {
-  static async getDailyQuiz(): Promise<{ questions: Question[], session: QuizSession }> {
+  static async getDailyQuiz(): Promise<ApiResponse<{ questions: Question[], session: QuizSession }>> {
     await delay(800); // Fake latency to load questions
     
     // Ofusca respostas dependendo do tipo da pergunta
     const sanitizedQuestions = QUESTIONS.map(q => {
       let secureAnswer = "HIDDEN";
-      if (q.type === "wordle" || q.type === "guess_the_word") {
+      if (q.type === QuestionType.WORDLE || q.type === QuestionType.GUESS_THE_WORD) {
          secureAnswer = safeEncodeBase64(q.answer);
       }
       return { ...q, answer: secureAnswer };
@@ -40,10 +41,10 @@ export class QuizRepository {
        localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
     }
 
-    return { questions: sanitizedQuestions, session: userSession };
+    return { status: "success", data: { questions: sanitizedQuestions, session: userSession } };
   }
 
-  static async submitAnswer(questionId: string, answer: string, attempts: number): Promise<{correct: boolean, points_earned: number, correct_answer_payload: string}> {
+  static async submitAnswer(questionId: string, answer: string, attempts: number): Promise<ApiResponse<{correct: boolean, points_earned: number, correct_answer_payload: string}>> {
     await delay(400); // Fake ping/pong for answering
 
     const question = QUESTIONS.find(q => q.id === questionId);
@@ -57,12 +58,12 @@ export class QuizRepository {
     let earnedPoints = 0;
     
     if (isCorrect) {
-      if (question.type === "guess_the_word") {
+      if (question.type === QuestionType.GUESS_THE_WORD) {
         // Penalty logic for guess the word
         const multiplier = Math.max(0, 1 - (attempts - 1) * 0.2);
-        earnedPoints = Math.round(question.points * multiplier);
+        earnedPoints = Math.round(question.base_points * multiplier);
       } else {
-        earnedPoints = question.points;
+        earnedPoints = question.base_points;
       }
     }
 
@@ -111,15 +112,18 @@ export class QuizRepository {
     localStorage.setItem("answers_log_db", JSON.stringify(activities));
 
     return {
-      correct: isCorrect,
-      points_earned: earnedPoints,
-      // Se errou ou acertou, sempre voltamos o final correto payload agora para renderizar
-      correct_answer_payload: question.answer 
+      status: "success",
+      data: {
+        correct: isCorrect,
+        points_earned: earnedPoints,
+        // Se errou ou acertou, sempre voltamos o final correto payload agora para renderizar
+        correct_answer_payload: question.answer 
+      }
     };
   }
 
   // Novo método para o front avisar que avançou no ponteiro do Quiz para salvar o progresso
-  static async advanceSession(login: string, newIndex: number, isFinished: boolean) {
+  static async advanceSession(login: string, newIndex: number, isFinished: boolean): Promise<ApiResponse<null>> {
      const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
      let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
      let userSession = allSessions[login] || { currentIndex: 0, score: 0, isFinished: false, correctCount: 0 };
@@ -128,5 +132,6 @@ export class QuizRepository {
      userSession.isFinished = isFinished;
      allSessions[login] = userSession;
      localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
+     return { status: "success", data: null };
   }
 }

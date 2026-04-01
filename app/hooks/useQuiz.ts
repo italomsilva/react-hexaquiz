@@ -20,13 +20,16 @@ export const useQuiz = () => {
   const [isValidating, setIsValidating] = useState(false);
 
   useEffect(() => {
-    QuizRepository.getDailyQuiz().then(data => {
-      setQuestions(data.questions);
-      if (data.session) {
-        setCurrentQuestionIndex(data.session.currentIndex);
-        setScore(data.session.score);
-        setIsFinished(data.session.isFinished);
-        setCorrectAnswersCount(data.session.correctCount || 0);
+    QuizRepository.getDailyQuiz().then(res => {
+      const data = res.data;
+      if (data) {
+        setQuestions(data.questions);
+        if (data.session) {
+          setCurrentQuestionIndex(data.session.currentIndex);
+          setScore(data.session.score);
+          setIsFinished(data.session.isFinished);
+          setCorrectAnswersCount(data.session.correctCount || 0);
+        }
       }
       setIsLoading(false);
     });
@@ -44,19 +47,20 @@ export const useQuiz = () => {
     setAttempts(nextAttempt);
     setSelectedOption(answer);
 
-    const result = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt);
+    const response = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt);
+    const result = response.data;
 
     setIsValidating(false);
 
-    if (result.correct) {
+    if (result && result.correct) {
       setScore((prev) => prev + result.points_earned);
       setCorrectAnswersCount(prev => prev + 1);
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
-    } else if (isGuessTheWord && nextAttempt >= 5) {
+    } else if (result && isGuessTheWord && nextAttempt >= 5) {
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
-    } else if (!isGuessTheWord) {
+    } else if (result && !isGuessTheWord) {
       // Multiple choice falha na hora
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);

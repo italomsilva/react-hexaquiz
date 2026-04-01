@@ -27,21 +27,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (loginUser: string, password: string): Promise<boolean> => {
-    const userData = await AuthRepository.login(loginUser, password);
-    if (userData) {
-      setUser(userData);
-      localStorage.setItem("quiz_user", JSON.stringify(userData));
+    const res = await AuthRepository.login(loginUser, password);
+    if (res.status === "success" && res.data) {
+      setUser(res.data);
+      localStorage.setItem("quiz_user", JSON.stringify(res.data));
       return true;
     }
     return false;
   };
 
   const register = async (name: string, email: string, loginUser: string, password: string): Promise<boolean> => {
-    const userData = await AuthRepository.register(name, email, loginUser, password);
-    if (userData) {
+    const res = await AuthRepository.register(name, email, loginUser, password);
+    if (res.status === "success" && res.data) {
       // Logar o usuário automaticamente
-      setUser(userData);
-      localStorage.setItem("quiz_user", JSON.stringify(userData));
+      setUser(res.data);
+      localStorage.setItem("quiz_user", JSON.stringify(res.data));
       return true;
     }
     return false;

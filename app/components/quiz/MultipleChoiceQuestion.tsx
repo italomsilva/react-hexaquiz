@@ -18,16 +18,16 @@ export function MultipleChoiceQuestion({
   isAnswered,
   onSelect,
 }: MultipleChoiceQuestionProps) {
-  const hasOptionImages = question.options.some((o) => !!o.image);
+  const hasOptionImages = question.options.some((o) => !!o.image_url);
 
   return (
     <div className="space-y-6">
       {/* Question Image */}
-      {question.image && (
+      {question.image_url && (
         <div className="relative aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl animate-in zoom-in duration-500">
           <Image
-            src={question.image}
-            alt={question.title}
+            src={question.image_url}
+            alt={question.text}
             fill
             className="object-cover"
             priority
@@ -63,10 +63,10 @@ export function MultipleChoiceQuestion({
                 hasOptionImages ? "items-center text-center space-y-3" : "text-left"
               }`}
             >
-              {option.image && (
+              {option.image_url && (
                 <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-surface-elevated">
                   <Image
-                    src={option.image}
+                    src={option.image_url}
                     alt={option.text || "Option"}
                     fill
                     className="object-cover"

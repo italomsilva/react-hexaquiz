@@ -95,11 +95,11 @@ export function WordleQuestion({
   return (
     <div className="flex flex-col items-center space-y-6 animate-in fade-in zoom-in duration-500">
       {/* Question Image */}
-      {question.image && (
+      {question.image_url && (
         <div className="relative aspect-square w-full max-w-[200px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl mb-4">
           <Image
-            src={question.image}
-            alt={question.title}
+            src={question.image_url}
+            alt={question.text}
             fill
             className="object-cover"
             priority

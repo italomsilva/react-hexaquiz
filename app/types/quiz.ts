@@ -1,26 +1,26 @@
 export enum QuestionType {
-  MULTIPLE_CHOICE = "multiple_choice",
-  TRUE_FALSE = "true_false",
-  GUESS_THE_WORD = "guess_the_word",
-  WORDLE = "wordle",
-  ORDERING = "ordering",
+  MULTIPLE_CHOICE = 1,
+  TRUE_FALSE = 2,
+  GUESS_THE_WORD = 3,
+  WORDLE = 4,
+  ORDERING = 5,
 }
 
 
 export interface Option {
   id: string;
   text?: string;
-  image?: string;
+  image_url?: string;
   questionId: string;
 }
 
 export interface Question {
   id: string;
-  title: string;
+  text: string;
   type: QuestionType;
   answer: string;
-  image?: string;
-  points: number;
+  image_url?: string;
+  base_points: number;
   options: Option[];
 }
 

@@ -49,11 +49,11 @@ export function OrderingQuestion({
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
        {/* Question Image */}
-      {question.image && (
+      {question.image_url && (
         <div className="relative aspect-square w-full max-w-[200px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl">
           <Image
-            src={question.image}
-            alt={question.title}
+            src={question.image_url}
+            alt={question.text}
             fill
             className="object-cover"
             priority

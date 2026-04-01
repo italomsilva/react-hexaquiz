@@ -14,7 +14,9 @@ export default function RankingPage() {
   React.useEffect(() => {
     setIsLoading(true);
     RankingRepository.getRanking(activeTab).then(res => {
-      setData(res);
+      if (res.status === "success" && res.data) {
+        setData(res.data.top_players);
+      }
       setIsLoading(false);
     });
   }, [activeTab]);

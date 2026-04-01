@@ -16,8 +16,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       AuthRepository.getProfile(user.id).then(res => {
-        if (res?.stats) {
-          setStats(res.stats);
+        if (res.status === "success" && res.data?.stats) {
+          setStats(res.data.stats);
         }
       });
     }

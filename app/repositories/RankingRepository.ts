@@ -1,4 +1,5 @@
 import { delay } from "../utils/delay";
+import { ApiResponse } from "../types/api";
 
 export interface RankingItem {
   rank: number;
@@ -17,7 +18,7 @@ const STATIC_RANKING: RankingItem[] = [
 ];
 
 export class RankingRepository {
-  static async getRanking(type: 'weekly' | 'general'): Promise<RankingItem[]> {
+  static async getRanking(type: 'weekly' | 'general'): Promise<ApiResponse<{ top_players: RankingItem[] }>> {
     await delay(600); // Simulate indexing load
 
     // Mesclar usuários do LocalStorage (onde registramos)
@@ -55,6 +56,6 @@ export class RankingRepository {
       player.rank = index + 1;
     });
 
-    return allPlayers;
+    return { status: "success", data: { top_players: allPlayers } };
   }
 }
