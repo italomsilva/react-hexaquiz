@@ -9,10 +9,10 @@ export const QUESTIONS: Question[] = [
     answer: '0',
     base_points: 100,
     options: [
-      { id: '0', text: "Opção 1", image_url: "/images/bg-home.png", questionId: "0" },
-      { id: '1', text: "Opção 2", image_url: "/images/bg-home.png", questionId: "0" },
-      { id: '2', text: "Opção 3", image_url: "/images/bg-home.png", questionId: "0" },
-      { id: '3', text: "Opção 4", image_url: "/images/bg-home.png", questionId: "0" }
+      { id: '0', text: "Opção 1", image_url: "/images/bg-home.png", question_id: "0" },
+      { id: '1', text: "Opção 2", image_url: "/images/bg-home.png", question_id: "0" },
+      { id: '2', text: "Opção 3", image_url: "/images/bg-home.png", question_id: "0" },
+      { id: '3', text: "Opção 4", image_url: "/images/bg-home.png", question_id: "0" }
     ],
   },
   {
@@ -22,10 +22,10 @@ export const QUESTIONS: Question[] = [
     answer: '2',
     base_points: 100,
     options: [
-      { id: '0', text: "Canadá", questionId: "1" },
-      { id: '1', text: "Estados Unidos", questionId: "1" },
-      { id: '2', text: "México", questionId: "1" },
-      { id: '3', text: "Marrocos", questionId: "1" }
+      { id: '0', text: "Canadá", question_id: "1" },
+      { id: '1', text: "Estados Unidos", question_id: "1" },
+      { id: '2', text: "México", question_id: "1" },
+      { id: '3', text: "Marrocos", question_id: "1" }
     ],
   },
   {
@@ -35,8 +35,8 @@ export const QUESTIONS: Question[] = [
     answer: '0',
     base_points: 50,
     options: [
-      { id: '0', text: "Verdadeiro", questionId: "2" },
-      { id: '1', text: "Falso", questionId: "2" }
+      { id: '0', text: "Verdadeiro", question_id: "2" },
+      { id: '1', text: "Falso", question_id: "2" }
     ],
   },
   {
@@ -46,7 +46,7 @@ export const QUESTIONS: Question[] = [
     answer: "AZTECA",
     base_points: 200,
     options: [
-      { id: 'hint', text: "Foi palco das finais de 1970 e 1986.", questionId: "3" }
+      { id: 'hint', text: "Foi palco das finais de 1970 e 1986.", question_id: "3" }
     ],
   },
   {
@@ -72,10 +72,10 @@ export const QUESTIONS: Question[] = [
     answer: '1',
     base_points: 100,
     options: [
-      { id: '0', text: "Europa", questionId: "6" },
-      { id: '1', text: "América do Norte", questionId: "6" },
-      { id: '2', text: "América do Sul", questionId: "6" },
-      { id: '3', text: "Ásia", questionId: "6" }
+      { id: '0', text: "Europa", question_id: "6" },
+      { id: '1', text: "América do Norte", question_id: "6" },
+      { id: '2', text: "América do Sul", question_id: "6" },
+      { id: '3', text: "Ásia", question_id: "6" }
     ],
   },
   {
@@ -93,10 +93,10 @@ export const QUESTIONS: Question[] = [
     answer: '3',
     base_points: 100,
     options: [
-      { id: '0', text: "Ottawa", questionId: "8" },
-      { id: '1', text: "Montreal", questionId: "8" },
-      { id: '2', text: "Quebec", questionId: "8" },
-      { id: '3', text: "Toronto", questionId: "8" }
+      { id: '0', text: "Ottawa", question_id: "8" },
+      { id: '1', text: "Montreal", question_id: "8" },
+      { id: '2', text: "Quebec", question_id: "8" },
+      { id: '3', text: "Toronto", question_id: "8" }
     ],
   },
   {
@@ -106,9 +106,9 @@ export const QUESTIONS: Question[] = [
     base_points: 200,
     answer: "usa,mexico,canada",
     options: [
-      { id: 'canada', text: "Canadá", questionId: "9" },
-      { id: 'mexico', text: "México", questionId: "9" },
-      { id: 'usa', text: "Estados Unidos", questionId: "9" },
+      { id: 'canada', text: "Canadá", question_id: "9" },
+      { id: 'mexico', text: "México", question_id: "9" },
+      { id: 'usa', text: "Estados Unidos", question_id: "9" },
     ],
   }
 ];

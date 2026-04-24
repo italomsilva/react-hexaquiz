@@ -5,9 +5,9 @@ import { ApiResponse } from "../types/api";
 import { safeEncodeBase64 } from "../utils/crypto";
 
 export interface QuizSession {
-  currentIndex: number;
-  score: number;
-  isFinished: boolean;
+  index: number;
+  points: number;
+  finished: boolean;
   correctCount: number;
 }
 
@@ -24,20 +24,20 @@ export class QuizRepository {
       return { ...q, answer: secureAnswer };
     });
 
-    // Recupera a sessão atual do banco de dados (por login do localStorage)
+    // Recupera a sessão atual do banco de dados (por username do localStorage)
     const loggedUserStr = localStorage.getItem("quiz_user");
-    let login = "anonymous";
+    let username = "anonymous";
     if (loggedUserStr) {
-       login = JSON.parse(loggedUserStr).login;
+       username = JSON.parse(loggedUserStr).username;
     }
 
     const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
     let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
     
-    let userSession = allSessions[login];
+    let userSession = allSessions[username];
     if (!userSession) {
-       userSession = { currentIndex: 0, score: 0, isFinished: false, correctCount: 0 };
-       allSessions[login] = userSession;
+       userSession = { index: 0, points: 0, finished: false, correctCount: 0 };
+       allSessions[username] = userSession;
        localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
     }
 
@@ -79,7 +79,7 @@ export class QuizRepository {
       const savedUsersStr = localStorage.getItem("quiz_users_db");
       if (savedUsersStr) {
         let users = JSON.parse(savedUsersStr);
-        const uIndex = users.findIndex((u: any) => u.login === activeUser.login);
+        const uIndex = users.findIndex((u: any) => u.username === activeUser.username);
         if (uIndex !== -1) {
           users[uIndex].points = activeUser.points;
           localStorage.setItem("quiz_users_db", JSON.stringify(users));
@@ -87,17 +87,17 @@ export class QuizRepository {
       }
 
       // Adiciona na pontuação da Sessão atual também
-      const login = activeUser.login;
+      const username = activeUser.username;
       const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
       let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
-      let userSession = allSessions[login] || { currentIndex: 0, score: 0, isFinished: false, correctCount: 0 };
+      let userSession = allSessions[username] || { index: 0, points: 0, finished: false, correctCount: 0 };
       
-      userSession.score += earnedPoints;
+      userSession.points += earnedPoints;
       if (isCorrect) {
         userSession.correctCount = (userSession.correctCount || 0) + 1;
       }
       
-      allSessions[login] = userSession;
+      allSessions[username] = userSession;
       localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
     }
 
@@ -123,14 +123,14 @@ export class QuizRepository {
   }
 
   // Novo método para o front avisar que avançou no ponteiro do Quiz para salvar o progresso
-  static async advanceSession(login: string, newIndex: number, isFinished: boolean): Promise<ApiResponse<null>> {
+  static async advanceSession(username: string, newIndex: number, finished: boolean): Promise<ApiResponse<null>> {
      const sessionsStr = localStorage.getItem("daily_quiz_attempts_db");
      let allSessions = sessionsStr ? JSON.parse(sessionsStr) : {};
-     let userSession = allSessions[login] || { currentIndex: 0, score: 0, isFinished: false, correctCount: 0 };
+     let userSession = allSessions[username] || { index: 0, points: 0, finished: false, correctCount: 0 };
      
-     userSession.currentIndex = newIndex;
-     userSession.isFinished = isFinished;
-     allSessions[login] = userSession;
+     userSession.index = newIndex;
+     userSession.finished = finished;
+     allSessions[username] = userSession;
      localStorage.setItem("daily_quiz_attempts_db", JSON.stringify(allSessions));
      return { status: "success", data: null };
   }

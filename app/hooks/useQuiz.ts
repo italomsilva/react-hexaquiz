@@ -25,9 +25,9 @@ export const useQuiz = () => {
       if (data) {
         setQuestions(data.questions);
         if (data.session) {
-          setCurrentQuestionIndex(data.session.currentIndex);
-          setScore(data.session.score);
-          setIsFinished(data.session.isFinished);
+          setCurrentQuestionIndex(data.session.index);
+          setScore(data.session.points);
+          setIsFinished(data.session.finished);
           setCorrectAnswersCount(data.session.correctCount || 0);
         }
       }
@@ -77,12 +77,12 @@ export const useQuiz = () => {
       setAttempts(0);
       
       if (user) {
-        QuizRepository.advanceSession(user.login, nextIndex, false);
+        QuizRepository.advanceSession(user.username, nextIndex, false);
       }
     } else {
       setIsFinished(true);
       if (user) {
-        QuizRepository.advanceSession(user.login, currentQuestionIndex, true);
+        QuizRepository.advanceSession(user.username, currentQuestionIndex, true);
       }
     }
   };
@@ -97,7 +97,7 @@ export const useQuiz = () => {
     setCorrectAnswersCount(0);
     setAttempts(0);
     if (user) {
-      QuizRepository.advanceSession(user.login, 0, false);
+      QuizRepository.advanceSession(user.username, 0, false);
     }
   };
 

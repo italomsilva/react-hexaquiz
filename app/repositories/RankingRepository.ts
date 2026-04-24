@@ -4,17 +4,18 @@ import { ApiResponse } from "../types/api";
 export interface RankingItem {
   rank: number;
   name: string;
+  username: string;
   points: number;
   isCurrentUser?: boolean;
 }
 
 const STATIC_RANKING: RankingItem[] = [
-  { rank: 0, name: "Pelé Eterno", points: 15000 },
-  { rank: 0, name: "Fenômeno 9", points: 14500 },
-  { rank: 0, name: "Gaúcho Art", points: 14200 },
-  { rank: 0, name: "Neymar Jr", points: 2500 },
-  { rank: 0, name: "Vinícius 7", points: 2350 },
-  { rank: 0, name: "Rodrygo10", points: 2200 },
+  { rank: 0, name: "Pelé Eterno", username: "rei_pele", points: 15000 },
+  { rank: 0, name: "Fenômeno 9", username: "r9", points: 14500 },
+  { rank: 0, name: "Gaúcho Art", username: "r10", points: 14200 },
+  { rank: 0, name: "Neymar Jr", username: "njr", points: 2500 },
+  { rank: 0, name: "Vinícius 7", username: "vini_jr", points: 2350 },
+  { rank: 0, name: "Rodrygo10", username: "rodrygo_go", points: 2200 },
 ];
 
 export class RankingRepository {
@@ -27,7 +28,7 @@ export class RankingRepository {
     
     // Identificar usuário logado
     const loggedStr = localStorage.getItem("quiz_user");
-    const activeLogin = loggedStr ? JSON.parse(loggedStr).login : "";
+    const activeUsername = loggedStr ? JSON.parse(loggedStr).username : "";
 
     let allPlayers: RankingItem[] = [
       ...STATIC_RANKING,
@@ -38,14 +39,15 @@ export class RankingRepository {
         rank: 0,
         name: u.name,
         points: u.points || 0,
-        isCurrentUser: u.login === activeLogin
+        username: u.username,
+        isCurrentUser: u.username === activeUsername
       });
     });
 
     // Se houver um fallback do 'teste' e ele não estiver no realUsers ainda (já que é gerado na hora por fallback)
-    if (activeLogin === "teste" && loggedStr && !realUsers.find((r:any) => r.login === "teste")) {
+    if (activeUsername === "teste" && loggedStr && !realUsers.find((r:any) => r.username === "teste")) {
        const mockPoints = JSON.parse(loggedStr).points || 850;
-       allPlayers.push({ rank: 0, name: "Usuário Teste", points: mockPoints, isCurrentUser: true });
+       allPlayers.push({ rank: 0, name: "Usuário Teste", points: mockPoints, username: "teste", isCurrentUser: true });
     }
 
     // Sort by points descendant

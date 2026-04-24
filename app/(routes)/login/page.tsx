@@ -16,7 +16,7 @@ export default function LoginPage() {
   // States
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [loginUser, setLoginUser] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,14 +35,14 @@ export default function LoginPage() {
 
     try {
       if (isRegisterMode) {
-        const success = await register(name, email, loginUser, password);
+        const success = await register(name, email, username, password);
         if (success) {
           router.push("/home");
         } else {
-          setError("Login ou e-mail já estão em uso");
+          setError("Nome de usuário ou e-mail já estão em uso");
         }
       } else {
-        const success = await login(loginUser, password);
+        const success = await login(username, password);
         if (success) {
           router.push("/home");
         } else {
@@ -128,11 +128,11 @@ export default function LoginPage() {
             )}
 
             <Input
-              label="Login"
+              label="Usuário"
               placeholder="Seu nome de usuário"
               required
-              value={loginUser}
-              onChange={(e) => setLoginUser(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               error={!isRegisterMode && error && error !== "As senhas não coincidem" ? " " : ""}
             />
             

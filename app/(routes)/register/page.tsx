@@ -15,7 +15,7 @@ export default function RegisterPage() {
   
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [loginUser, setLoginUser] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -24,11 +24,11 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const success = await register(name, email, loginUser, password);
+      const success = await register(name, email, username, password);
       if (success) {
         router.push("/home");
       } else {
-        setError("Login ou e-mail já estão em uso");
+        setError("Nome de usuário ou e-mail já estão em uso");
       }
     } catch (err) {
       setError("Ocorreu um erro ao tentar criar o cadastro");
@@ -66,11 +66,11 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
-            label="Login"
+            label="Usuário"
             placeholder="Escolha um nome de usuário"
             required
-            value={loginUser}
-            onChange={(e) => setLoginUser(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             error={error ? " " : ""}
           />
           <Input

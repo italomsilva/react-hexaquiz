@@ -11,7 +11,7 @@ export interface Option {
   id: string;
   text?: string;
   image_url?: string;
-  questionId: string;
+  question_id: string;
 }
 
 export interface Question {
@@ -28,5 +28,6 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  username: string;
   points: number;
 }

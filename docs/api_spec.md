@@ -44,7 +44,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 {
   "name": "Neymar Jr",
   "email": "ney@selecao.com",
-  "login": "njr10",
+  "username": "njr10",
   "password": "mySecurePassword"
 }
 ```
@@ -59,7 +59,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       "id": "uuid",
       "name": "Neymar Jr",
       "email": "ney@selecao.com",
-      "login": "njr10"
+      "username": "njr10"
     }
   }
 }
@@ -70,7 +70,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 **Entrada (Body/JSON):** 
 ```json
 {
-  "loginUser": "njr10",
+  "username": "njr10",
   "password": "mySecurePassword"
 }
 ```
@@ -84,7 +84,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       "id": "uuid",
       "name": "Neymar Jr",
       "email": "ney@selecao.com",
-      "login": "njr10"
+      "username": "njr10"
     }
   }
 }
@@ -100,7 +100,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
     "user": { 
       "id": "uuid", 
       "name": "Neymar Jr", 
-      "login": "njr10", 
+      "username": "njr10", 
       "points": 850 
     }
   }
@@ -115,7 +115,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 **Descrição:** Traz as perguntas do dia e o estado da sessão atual do usuário.
 **Lógica Backend:**
 1. Busca todas as `questions` vinculadas através da `daily_quizzes` para a data de hoje.
-2. Busca se o usuário possui registro na `daily_quiz_sessions` para o `quiz_date` de hoje.
+2. Busca se o usuário possui registro na `game_session` para o `quiz_id` de hoje.
 3. Se não tiver, **cria** um novo registro de sessão (zerado).
 4. Oculta o campo `answer` das questões (para não expor na aba Network).
 
@@ -124,7 +124,8 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 {
   "status": "success",
   "data": {
-    "quiz_date": "2026-04-01",
+    "quiz_id": "uuid-da-agenda",
+    "quiz_date": "2026-04-01T00:00:00Z",
     "questions": [
       { 
         "id": "q1", 
@@ -145,9 +146,9 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       }
     ],
     "session": {
-      "current_index": 0,
+      "index": 0,
       "points": 0,
-      "is_finished": false
+      "finished": false
     }
   }
 }
@@ -176,16 +177,16 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 ```
 **Lógica Backend:**
 1. Valida a resposta submetida contra a resposta do banco.
-2. Calcula pontos basedo em `questions.base_points` e deduções por `attempts_used` (se for o caso de múltiplas tentativas).
-3. **Atualiza** a `daily_quiz_sessions`: Soma o `points_earned` atual e avança o `current_index`.
+2. Calcula pontos baseado em `questions.base_points` e deduções por `attempts_used` (se for o caso de múltiplas tentativas).
+3. **Atualiza** a `game_session`: Soma o `points_earned` atual e avança o `index`.
 
 #### 🔹 `POST /api/quiz/finish`
 **Descrição:** Encerra o quiz de hoje e consolida os pontos no ranking global.
 **Entrada:** Nenhuma (Headers recebem JWT do usuário).
 **Lógica Backend:**
-1. Busca a sessão do usuário de hoje (`daily_quiz_sessions` onde `quiz_date` = hoje).
-2. Define `is_finished = true`.
-3. Pega o `points_earned` total da sessão e **adiciona** na coluna `total_points` da tabela `users`.
+1. Busca a sessão do usuário de hoje (`game_session` ativa).
+2. Define `finished = true`.
+3. Pega o `points` acumulado da sessão e **adiciona** na coluna `total_points` da tabela `user`.
 4. Define `completed_at = NOW()`.
 
 **Saída (200 OK):**
@@ -210,8 +211,8 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
   "status": "success",
   "data": {
     "top_players": [
-      { "rank": 1, "name": "Pelé", "points": 15000, "is_me": false },
-      { "rank": 2, "name": "Italo", "points": 850, "is_me": true }
+      { "rank": 1, "username": "pelé", "name": "Pelé", "points": 15000, "is_me": false },
+      { "rank": 2, "username": "italo", "name": "Italo", "points": 850, "is_me": true }
     ],
     "pagination": {
       "limit": 10,
@@ -232,7 +233,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
     "user": { 
       "name": "Neymar Jr", 
       "email": "ney@selecao.com", 
-      "login": "njr10",
+      "username": "njr10",
       "joined_at": "2026-03-30T10:00:00Z" 
     },
     "stats": {

@@ -48,7 +48,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="text-center">
-              <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>{user?.email.split('@')[0]}</h2>
+              <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>@{user?.username}</h2>
               <p className="text-foreground/60 text-sm font-medium">{user?.email}</p>
               <div className="mt-4 p-3 bg-surface-elevated rounded-xl border border-border-subtle inline-block min-w-[120px]">
                 <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">XP Acumulado</div>

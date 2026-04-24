@@ -6,20 +6,20 @@ Este documento detalha a estrutura de tabelas sugeridas para o banco de dados re
 
 ## 🏗 Tabelas
 
-### 1. `users`
+### 1. `user`
 Armazena dados dos jogadores e pontuação global para o ranking.
 
 | Coluna | Tipo | Restrições | Descrição |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador único. |
-| `name` | VARCHAR(100) | NOT NULL | Nome completo. |
-| `email` | VARCHAR(150) | UNIQUE, NOT NULL | E-mail de login/contato. |
-| `login` | VARCHAR(15) | UNIQUE, NOT NULL | Nickname/Login. |
+| `name` | VARCHAR(50) | NOT NULL | Nome completo. |
+| `username` | VARCHAR(20) | UNIQUE, NOT NULL | Nickname/Login. |
+| `email` | VARCHAR(100) | UNIQUE, NOT NULL | E-mail de login/contato. |
 | `password` | VARCHAR(255) | NOT NULL | Senha (Hash bcrypt). |
 | `total_points` | INT | DEFAULT 0 | Soma de todos os pontos ganhos em quizzes. |
 | `created_at` | TIMESTAMP | DEFAULT NOW() | Data de registro. |
 
-### 2. `questions`
+### 2. `Question`
 Armazena o acervo de perguntas do sistema.
 
 | Coluna | Tipo | Restrições | Descrição |
@@ -31,15 +31,15 @@ Armazena o acervo de perguntas do sistema.
 | `image_url` | VARCHAR(255) | NULL | URL da imagem de apoio. |
 | `base_points` | INT | DEFAULT 10 | Pontuação base da questão. |
 
-### 3. `options`
+### 3. `option`
 Alternativas para questões de múltipla escolha.
 
 | Coluna | Tipo | Restrições | Descrição |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador da opção. |
-| `question_id` | UUID | FOREIGN KEY | Referência à pergunta. |
 | `text` | VARCHAR(255) | NULL | Texto da alternativa. |
 | `image_url` | VARCHAR(255) | NULL | Imagem da alternativa (se houver). |
+| `question_id` | UUID | FOREIGN KEY | Referência à pergunta. |
 
 ### 4. `daily_quizzes` (Agenda)
 Define quais perguntas aparecem em cada dia.
@@ -48,19 +48,19 @@ Define quais perguntas aparecem em cada dia.
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador da entrada na agenda. |
 | `question_id` | UUID | FOREIGN KEY | Referência à pergunta. |
-| `scheduled_date` | DATE | NOT NULL | Data em que será exibida. |
+| `scheduled_date` | TIMESTAMP | NOT NULL | Data e hora em que será exibida. |
 | `sequence` | INT | NOT NULL | Ordem no quiz do dia. |
 
-### 5. `daily_quiz_sessions` (Progresso)
+### 5. `game_session` (Progresso)
 Controla o progresso do usuário no quiz de um dia específico.
 
 | Coluna | Tipo | Restrições | Descrição |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador da sessão. |
 | `user_id` | UUID | FOREIGN KEY | Usuário participante. |
-| `quiz_date` | DATE | NOT NULL | Data do quiz. |
-| `current_index` | INT | DEFAULT 0 | Índice da questão atual (retomada). |
-| `points_earned` | INT | DEFAULT 0 | Pontos ganhos hoje. |
-| `is_finished` | BOOLEAN | DEFAULT FALSE | Bloqueia novas tentativas se `true`. |
+| `quiz_id` | UUID | FOREIGN KEY | Referência ao quiz da agenda (`daily_quizzes.id`). |
+| `index` | INT | DEFAULT 0 | Índice da questão atual (retomada). |
+| `points` | INT | DEFAULT 0 | Pontos ganhos hoje. |
+| `finished` | BOOLEAN | DEFAULT FALSE | Bloqueia novas tentativas se `true`. |
 | `started_at` | TIMESTAMP | DEFAULT NOW() | Início da partida. |
 | `completed_at` | TIMESTAMP | NULL | Término da partida. |
