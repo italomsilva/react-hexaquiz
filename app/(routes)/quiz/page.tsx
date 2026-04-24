@@ -102,7 +102,7 @@ export default function QuizPage() {
                   PERGUNTA {currentQuestionIndex + 1}/{totalQuestions}
                 </span>
                 <span className="text-foreground/40 font-bold text-xs uppercase tracking-widest bg-surface-elevated px-3 py-1 rounded-full border border-border-subtle">
-                  Vale {currentQuestion.base_points} XP
+                  Vale {currentQuestion.basePoints} XP
                 </span>
               </div>
               <h2 className="text-2xl font-black italic leading-tight uppercase">

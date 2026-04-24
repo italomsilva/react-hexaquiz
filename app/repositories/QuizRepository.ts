@@ -61,9 +61,9 @@ export class QuizRepository {
       if (question.type === QuestionType.GUESS_THE_WORD) {
         // Penalty logic for guess the word
         const multiplier = Math.max(0, 1 - (attempts - 1) * 0.2);
-        earnedPoints = Math.round(question.base_points * multiplier);
+        earnedPoints = Math.round(question.basePoints * multiplier);
       } else {
-        earnedPoints = question.base_points;
+        earnedPoints = question.basePoints;
       }
     }
 

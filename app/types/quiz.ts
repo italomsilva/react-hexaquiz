@@ -10,8 +10,8 @@ export enum QuestionType {
 export interface Option {
   id: string;
   text?: string;
-  image_url?: string;
-  question_id: string;
+  image?: string;
+  questionId: string;
 }
 
 export interface Question {
@@ -19,15 +19,7 @@ export interface Question {
   text: string;
   type: QuestionType;
   answer: string;
-  image_url?: string;
-  base_points: number;
+  image?: string;
+  basePoints: number;
   options: Option[];
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  username: string;
-  points: number;
 }

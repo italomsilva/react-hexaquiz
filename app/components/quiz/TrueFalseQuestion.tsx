@@ -21,10 +21,10 @@ export function TrueFalseQuestion({
   return (
     <div className="space-y-6">
       {/* Question Image */}
-      {question.image_url && (
+      {question.image && (
         <div className="relative aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl animate-in zoom-in duration-500">
           <Image
-            src={question.image_url}
+            src={question.image}
             alt={question.text}
             fill
             className="object-cover"
@@ -34,8 +34,12 @@ export function TrueFalseQuestion({
       )}
 
       <div className="grid grid-cols-2 gap-4 h-48">
-        {question.options.map((option) => {
+        {[
+          { id: "true", text: "Verdadeiro" },
+          { id: "false", text: "Falso" },
+        ].map((option) => {
           let statusClass = "bg-surface border-border-standard text-foreground";
+          const isTrue = option.id === "true";
 
           if (isAnswered && correctAnswer) {
             if (option.id === correctAnswer) {
@@ -48,8 +52,6 @@ export function TrueFalseQuestion({
           } else if (selectedOption === option.id) {
             statusClass = "border-primary bg-primary/10 text-primary scale-[1.02] shadow-lg shadow-primary/20";
           }
-
-          const isTrue = option.text ? option.text.toLowerCase() === "verdadeiro" : false;
 
           return (
             <button

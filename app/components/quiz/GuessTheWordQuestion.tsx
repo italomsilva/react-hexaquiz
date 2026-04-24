@@ -47,10 +47,10 @@ export function GuessTheWordQuestion({
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Question Image */}
-      {question.image_url && (
+      {question.image && (
         <div className="relative aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl border-4 border-surface-elevated shadow-2xl animate-in zoom-in duration-500">
           <Image
-            src={question.image_url}
+            src={question.image}
             alt={question.text}
             fill
             className="object-cover"

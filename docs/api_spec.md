@@ -59,7 +59,8 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       "id": "uuid",
       "name": "Neymar Jr",
       "email": "ney@selecao.com",
-      "username": "njr10"
+      "username": "njr10",
+      "profile_image": "https://..."
     }
   }
 }
@@ -84,7 +85,8 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       "id": "uuid",
       "name": "Neymar Jr",
       "email": "ney@selecao.com",
-      "username": "njr10"
+      "username": "njr10",
+      "profile_image": "https://..."
     }
   }
 }
@@ -137,13 +139,20 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
           { "id": "opt2", "text": "Neymar" }
         ] 
       },
-      { 
-        "id": "q2", 
-        "text": "Adivinhe o jogador?", 
-        "type": 3, 
-        "answer": "Uk9OQUxETw==",
-        "options": []
-      }
+        { 
+          "id": "q2", 
+          "text": "Adivinhe o jogador?", 
+          "type": 3, 
+          "answer": "Uk9OQUxETw==",
+          "options": []
+        },
+        {
+          "id": "q3",
+          "text": "O Brasil venceu a Copa de 2002?",
+          "type": 4,
+          "answer": "true",
+          "options": []
+        }
     ],
     "session": {
       "index": 0,
@@ -234,6 +243,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
       "name": "Neymar Jr", 
       "email": "ney@selecao.com", 
       "username": "njr10",
+      "profile_image": "https://...",
       "joined_at": "2026-03-30T10:00:00Z" 
     },
     "stats": {

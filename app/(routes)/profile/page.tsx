@@ -52,7 +52,7 @@ export default function ProfilePage() {
               <p className="text-foreground/60 text-sm font-medium">{user?.email}</p>
               <div className="mt-4 p-3 bg-surface-elevated rounded-xl border border-border-subtle inline-block min-w-[120px]">
                 <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">XP Acumulado</div>
-                <div className="text-xl font-black italic text-neon text-shadow-glow">{user?.points || 0}</div>
+                <div className="text-xl font-black italic text-neon text-shadow-glow">{user?.totalPoints || 0}</div>
               </div>
             </div>
           </section>

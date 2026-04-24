@@ -15,11 +15,12 @@ Armazena dados dos jogadores e pontuação global para o ranking.
 | `name` | VARCHAR(50) | NOT NULL | Nome completo. |
 | `username` | VARCHAR(20) | UNIQUE, NOT NULL | Nickname/Login. |
 | `email` | VARCHAR(100) | UNIQUE, NOT NULL | E-mail de login/contato. |
+| `profile_image` | VARCHAR(255) | NULL | URL da imagem de perfil. |
 | `password` | VARCHAR(255) | NOT NULL | Senha (Hash bcrypt). |
 | `total_points` | INT | DEFAULT 0 | Soma de todos os pontos ganhos em quizzes. |
 | `created_at` | TIMESTAMP | DEFAULT NOW() | Data de registro. |
 
-### 2. `Question`
+### 2. `question`
 Armazena o acervo de perguntas do sistema.
 
 | Coluna | Tipo | Restrições | Descrição |
@@ -27,18 +28,19 @@ Armazena o acervo de perguntas do sistema.
 | `id` | UUID | PRIMARY KEY | Identificador da questão. |
 | `text` | TEXT | NOT NULL | Pergunta. |
 | `type` | INT | NOT NULL | Tipo (`multiple_choice`, `guess_the_word`, `wordle`, `true_false`). |
-| `answer` | VARCHAR(255) | NOT NULL | Resposta correta (Texto ou ID da opção). |
-| `image_url` | VARCHAR(255) | NULL | URL da imagem de apoio. |
+| `answer` | VARCHAR(255) | NOT NULL | Resposta correta (Texto, ID da opção, ou "true"/"false" para true_false). |
+| `image` | VARCHAR(255) | NULL | URL da imagem de apoio. |
 | `base_points` | INT | DEFAULT 10 | Pontuação base da questão. |
 
 ### 3. `option`
-Alternativas para questões de múltipla escolha.
+Alternativas para questões de múltipla escolha ou ordenação.
+**Nota:** Questões do tipo `true_false` não utilizam esta tabela (as opções Verdadeiro/Falso são implícitas).
 
 | Coluna | Tipo | Restrições | Descrição |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID | PRIMARY KEY | Identificador da opção. |
 | `text` | VARCHAR(255) | NULL | Texto da alternativa. |
-| `image_url` | VARCHAR(255) | NULL | Imagem da alternativa (se houver). |
+| `image` | VARCHAR(255) | NULL | Imagem da alternativa (se houver). |
 | `question_id` | UUID | FOREIGN KEY | Referência à pergunta. |
 
 ### 4. `daily_quizzes` (Agenda)
