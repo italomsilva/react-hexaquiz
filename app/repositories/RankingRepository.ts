@@ -6,16 +6,17 @@ export interface RankingItem {
   name: string;
   username: string;
   points: number;
+  profileImage?: string;
   isCurrentUser?: boolean;
 }
 
 const STATIC_RANKING: RankingItem[] = [
-  { rank: 0, name: "Pelé Eterno", username: "rei_pele", points: 15000 },
-  { rank: 0, name: "Fenômeno 9", username: "r9", points: 14500 },
-  { rank: 0, name: "Gaúcho Art", username: "r10", points: 14200 },
-  { rank: 0, name: "Neymar Jr", username: "njr", points: 2500 },
-  { rank: 0, name: "Vinícius 7", username: "vini_jr", points: 2350 },
-  { rank: 0, name: "Rodrygo10", username: "rodrygo_go", points: 2200 },
+  { rank: 0, name: "Pelé Eterno", username: "rei_pele", points: 15000, profileImage: "/images/avatar/avatar_00.jpeg" },
+  { rank: 0, name: "Fenômeno 9", username: "r9", points: 14500, profileImage: "/images/avatar/avatar_01.jpeg" },
+  { rank: 0, name: "Gaúcho Art", username: "r10", points: 14200, profileImage: "/images/avatar/avatar_02.jpeg" },
+  { rank: 0, name: "Neymar Jr", username: "njr", points: 2500, profileImage: "/images/avatar/avatar_03.jpeg" },
+  { rank: 0, name: "Vinícius 7", username: "vini_jr", points: 2350, profileImage: "/images/avatar/avatar_04.jpeg" },
+  { rank: 0, name: "Rodrygo10", username: "rodrygo_go", points: 2200, profileImage: "/images/avatar/avatar_05.jpeg" },
 ];
 
 export class RankingRepository {
@@ -40,6 +41,7 @@ export class RankingRepository {
         name: u.name,
         points: u.points || 0,
         username: u.username,
+        profileImage: u.profileImage,
         isCurrentUser: u.username === activeUsername
       });
     });

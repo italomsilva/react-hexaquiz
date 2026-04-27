@@ -1,17 +1,23 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 import { Button } from "@/app/components/ui/Button";
 import { useAuth } from "@/app/context/AuthContext";
 import { useTheme } from "@/app/context/ThemeContext";
 import { AuthRepository } from "@/app/repositories/AuthRepository";
+import { AvatarSelector } from "@/app/components/register/AvatarSelector";
+import { AVATARS } from "@/app/constants/avatars";
 
 export default function ProfilePage() {
   const theme = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, updateAvatar } = useAuth();
   const [stats, setStats] = useState({ quizzes_played: 0, accuracy: 0 });
+  
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
 
   useEffect(() => {
     if (user) {
@@ -20,8 +26,20 @@ export default function ProfilePage() {
           setStats(res.data.stats);
         }
       });
+      if (user.profileImage && user.profileImage !== "N/A") {
+        setSelectedAvatar(user.profileImage);
+      }
     }
   }, [user]);
+
+  const handleSaveAvatar = async () => {
+    if (selectedAvatar) {
+      const success = await updateAvatar(selectedAvatar);
+      if (success) {
+        setIsEditingAvatar(false);
+      }
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -32,14 +50,26 @@ export default function ProfilePage() {
           <section className="flex flex-col items-center space-y-4">
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-surface border-2 border-primary p-1">
-                <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-foreground/40">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden relative">
+                  {user?.profileImage && user.profileImage !== "N/A" ? (
+                    <Image
+                      src={user.profileImage}
+                      alt={user.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-foreground/40">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  )}
                 </div>
               </div>
-              <button className="absolute bottom-0 right-0 p-2 bg-primary rounded-full border border-background shadow-lg hover:scale-110 transition-transform">
+              <button 
+                onClick={() => setIsEditingAvatar(true)}
+                className="absolute bottom-0 right-0 p-2 bg-primary rounded-full border border-background shadow-lg hover:scale-110 transition-transform cursor-pointer"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -89,6 +119,31 @@ export default function ProfilePage() {
             </p>
           </footer>
         </main>
+        
+        {isEditingAvatar && (
+          <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-surface border border-border-standard rounded-2xl w-full max-w-md p-6 space-y-8 shadow-2xl animate-in zoom-in-95 duration-200">
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-black italic tracking-tighter text-primary">Trocar Avatar</h3>
+                <p className="text-sm font-medium text-foreground/60">Escolha como você quer ser visto</p>
+              </div>
+              
+              <AvatarSelector
+                selectedAvatar={selectedAvatar}
+                onSelect={setSelectedAvatar}
+              />
+              
+              <div className="grid grid-cols-2 gap-3 pt-4">
+                <Button variant="outline" fullWidth onClick={() => setIsEditingAvatar(false)}>
+                  Cancelar
+                </Button>
+                <Button fullWidth onClick={handleSaveAvatar}>
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );

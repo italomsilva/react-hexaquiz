@@ -12,7 +12,8 @@ export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (username: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, username: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, username: string, password: string, profileImage: string) => Promise<boolean>;
+  updateAvatar: (avatarUrl: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 }

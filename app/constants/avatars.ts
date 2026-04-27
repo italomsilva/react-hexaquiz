@@ -1,0 +1,15 @@
+export const AVATARS = [
+  "/images/avatar/avatar_00.jpeg",
+  "/images/avatar/avatar_01.jpeg",
+  "/images/avatar/avatar_02.jpeg",
+  "/images/avatar/avatar_03.jpeg",
+  "/images/avatar/avatar_04.jpeg",
+  "/images/avatar/avatar_05.jpeg",
+  "/images/avatar/avatar_06.jpeg",
+  "/images/avatar/avatar_07.jpeg",
+  "/images/avatar/avatar_08.jpeg",
+  "/images/avatar/avatar_09.jpeg",
+  "/images/avatar/avatar_10.jpeg",
+  "/images/avatar/avatar_11.jpeg",
+  "/images/avatar/avatar_12.jpeg",
+];

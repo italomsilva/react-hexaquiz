@@ -9,7 +9,6 @@ export class AuthRepository {
   ): Promise<ApiResponse<User>> {
     await delay(600); // Fake latency
 
-    // fallback mock user
     if (username === "teste" && password === "12345678") {
       return {
         status: "success",
@@ -58,6 +57,7 @@ export class AuthRepository {
     email: string,
     username: string,
     password: string,
+    profileImage: string,
   ): Promise<ApiResponse<User>> {
     await delay(800); // Fake latency
 
@@ -82,6 +82,7 @@ export class AuthRepository {
       username,
       password,
       points: 0,
+      profileImage,
     };
 
     users.push(newUser);
@@ -89,7 +90,7 @@ export class AuthRepository {
 
     return {
       status: "success",
-      data: { id: newUser.id, name, email, username, totalPoints: 0, createdAt: new Date().toISOString(), profileImage: "N/A" },
+      data: { id: newUser.id, name, email, username, totalPoints: 0, createdAt: new Date().toISOString(), profileImage: newUser.profileImage },
     };
   }
 
@@ -119,6 +120,54 @@ export class AuthRepository {
               : 0,
         },
       },
+    };
+  }
+
+  static async updateAvatar(userId: string, avatarUrl: string): Promise<ApiResponse<User>> {
+    await delay(300);
+
+    if (userId === "mock-1") {
+      return {
+        status: "success",
+        data: {
+          id: "mock-1",
+          name: "Usuário Teste",
+          email: "teste@gmail.com",
+          username: "teste",
+          totalPoints: 850,
+          createdAt: new Date().toISOString(),
+          profileImage: avatarUrl,
+        },
+      };
+    }
+
+    const savedUsersStr = localStorage.getItem("quiz_users_db");
+    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
+    const index = users.findIndex((u: any) => u.id === userId);
+
+    if (index !== -1) {
+      users[index].profileImage = avatarUrl;
+      localStorage.setItem("quiz_users_db", JSON.stringify(users));
+      
+      const u = users[index];
+      return {
+        status: "success",
+        data: {
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          username: u.username,
+          totalPoints: u.totalPoints || 0,
+          createdAt: u.createdAt || new Date().toISOString(),
+          profileImage: u.profileImage,
+        },
+      };
+    }
+
+    return {
+      status: "error",
+      data: null,
+      error: { code: "NOT_FOUND", message: "Usuário não encontrado" },
     };
   }
 }

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
 import { useAuth } from "@/app/context/AuthContext";
+import { AvatarSelector } from "@/app/components/register/AvatarSelector";
+import { AVATARS } from "@/app/constants/avatars";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,6 +23,7 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +38,7 @@ export default function LoginPage() {
 
     try {
       if (isRegisterMode) {
-        const success = await register(name, email, username, password);
+        const success = await register(name, email, username, password, selectedAvatar);
         if (success) {
           router.push("/home");
         } else {
@@ -76,8 +79,8 @@ export default function LoginPage() {
   );
 
   return (
-    <main className="min-h-[100dvh] flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-      <div className="w-full max-w-sm z-10 flex flex-col items-center space-y-10">
+    <main className="min-h-[100dvh] flex flex-col items-center justify-center p-6 relative overflow-y-auto overflow-x-hidden bg-background">
+      <div className="w-full max-w-sm z-10 flex flex-col items-center space-y-10 my-4">
         <div className="text-center flex flex-col items-center space-y-3">
           <h1 className="text-5xl font-black italic tracking-tighter text-primary">
             QUIZ<span className="text-foreground">2026</span>
@@ -173,6 +176,13 @@ export default function LoginPage() {
                     </button>
                   }
                 />
+
+                <div className="pt-2">
+                  <AvatarSelector 
+                    selectedAvatar={selectedAvatar} 
+                    onSelect={setSelectedAvatar} 
+                  />
+                </div>
               </div>
             )}
           </div>

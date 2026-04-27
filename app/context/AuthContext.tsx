@@ -40,15 +40,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const register = async (name: string, email: string, username: string, password: string): Promise<boolean> => {
+  const register = async (name: string, email: string, username: string, password: string, profileImage: string): Promise<boolean> => {
     setIsLoading(true);
-    const res = await AuthRepository.register(name, email, username, password);
+    const res = await AuthRepository.register(name, email, username, password, profileImage);
     setIsLoading(false);
 
     if (res.status === "success" && res.data) {
       setUser(res.data);
       localStorage.setItem("quiz_user", JSON.stringify(res.data));
       router.push("/");
+      return true;
+    }
+    return false;
+  };
+
+  const updateAvatar = async (avatarUrl: string): Promise<boolean> => {
+    if (!user) return false;
+    const res = await AuthRepository.updateAvatar(user.id, avatarUrl);
+    if (res.status === "success" && res.data) {
+      setUser(res.data);
+      localStorage.setItem("quiz_user", JSON.stringify(res.data));
       return true;
     }
     return false;
@@ -61,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, updateAvatar, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

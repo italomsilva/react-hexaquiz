@@ -6,6 +6,8 @@ import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
 import { useAuth } from "@/app/context/AuthContext";
 import Link from "next/link";
+import { AvatarSelector } from "@/app/components/register/AvatarSelector";
+import { AVATARS } from "@/app/constants/avatars";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const success = await register(name, email, username, password);
+      const success = await register(name, email, username, password, selectedAvatar);
       if (success) {
         router.push("/home");
       } else {
@@ -80,6 +83,11 @@ export default function RegisterPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <AvatarSelector 
+            selectedAvatar={selectedAvatar} 
+            onSelect={setSelectedAvatar} 
           />
 
           {error && (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Header } from "@/app/components/layout/Header";
 import { ProtectedRoute } from "@/app/components/layout/ProtectedRoute";
 
@@ -70,13 +71,34 @@ export default function RankingPage() {
                     }`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic ${item.rank === 1 ? "bg-yellow-500 text-background shadow-lg shadow-yellow-500/50" :
-                        item.rank === 2 ? "bg-foreground/20 text-foreground" :
-                          item.rank === 3 ? "bg-amber-600 text-background" :
-                            "bg-surface-elevated text-foreground/40"
-                      }`}>
-                      {item.rank}
+                    <div className="relative">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic z-10 relative ${item.rank === 1 ? "bg-yellow-500 text-background shadow-lg shadow-yellow-500/50" :
+                          item.rank === 2 ? "bg-foreground/20 text-foreground" :
+                            item.rank === 3 ? "bg-amber-600 text-background" :
+                              "bg-surface-elevated text-foreground/40"
+                        }`}>
+                        {item.rank}
+                      </div>
                     </div>
+                    
+                    <div className="w-10 h-10 rounded-full bg-surface-elevated overflow-hidden relative border border-border-subtle">
+                      {item.profileImage && item.profileImage !== "N/A" ? (
+                        <Image
+                          src={item.profileImage}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
                     <span className={`font-bold ${item.isCurrentUser ? "text-primary" : "text-foreground"}`}>
                       {item.name}
                     </span>
