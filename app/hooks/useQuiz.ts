@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Question, QuestionType } from "@/app/types/quiz";
 import { QuizRepository } from "@/app/repositories/QuizRepository";
 import { useAuth } from "@/app/context/AuthContext";
+import { safeDecodeBase64 } from "@/app/utils/crypto";
 
 export const useQuiz = () => {
   const { user } = useAuth();
@@ -47,6 +48,16 @@ export const useQuiz = () => {
     setAttempts(nextAttempt);
     setSelectedOption(answer);
 
+    if (isGuessTheWord) {
+      const decodedAnswer = safeDecodeBase64(currentQuestion.answer).toUpperCase();
+      const isCorrect = decodedAnswer === answer.toUpperCase();
+
+      if (!isCorrect && nextAttempt < 5) {
+        setIsValidating(false);
+        return;
+      }
+    }
+
     const response = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt);
     const result = response.data;
 
@@ -57,11 +68,7 @@ export const useQuiz = () => {
       setCorrectAnswersCount(prev => prev + 1);
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
-    } else if (result && isGuessTheWord && nextAttempt >= 5) {
-      setCorrectAnswer(result.correct_answer_payload);
-      setIsAnswered(true);
-    } else if (result && !isGuessTheWord) {
-      // Multiple choice falha na hora
+    } else if (result) {
       setCorrectAnswer(result.correct_answer_payload);
       setIsAnswered(true);
     }
@@ -75,15 +82,8 @@ export const useQuiz = () => {
       setCorrectAnswer(null);
       setIsAnswered(false);
       setAttempts(0);
-      
-      if (user) {
-        QuizRepository.advanceSession(user.username, nextIndex, false);
-      }
     } else {
       setIsFinished(true);
-      if (user) {
-        QuizRepository.advanceSession(user.username, currentQuestionIndex, true);
-      }
     }
   };
 
@@ -97,7 +97,7 @@ export const useQuiz = () => {
     setCorrectAnswersCount(0);
     setAttempts(0);
     if (user) {
-      QuizRepository.advanceSession(user.username, 0, false);
+      QuizRepository.resetSession(user.username);
     }
   };
 

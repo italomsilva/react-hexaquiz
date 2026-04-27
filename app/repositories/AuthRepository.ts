@@ -97,13 +97,9 @@ export class AuthRepository {
   static async getProfile(
     userIdStr?: string,
   ): Promise<ApiResponse<{ stats: any }>> {
-    await delay(400); // Fake latency
-    // In a real app we would use user's JWT token server-side or pass the header
-    // Here we will just look at localStorage to fetch matches stats
-
+    await delay(400);
     const savedActivities = localStorage.getItem("answers_log_db");
     const activities = savedActivities ? JSON.parse(savedActivities) : [];
-
     return {
       status: "success",
       data: {
