@@ -37,7 +37,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 
 ### 1. Autenticação & Perfil
 
-#### 🔹 `POST /api/auth/register`
+#### 🔹 `POST /app/auth/register`
 **Descrição:** Registro de um novo jogador.
 **Entrada (Body/JSON):**
 ```json
@@ -66,7 +66,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 }
 ```
 
-#### 🔹 `POST /api/auth/login`
+#### 🔹 `POST /app/auth/login`
 **Descrição:** Login de um usuário existente.
 **Entrada (Body/JSON):** 
 ```json
@@ -91,7 +91,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 }
 ```
 
-#### 🔹 `GET /api/users/profile/me`
+#### 🔹 `GET /app/users/profile/me`
 **Descrição:** Estatísticas completas do perfil do jogador.
 **Saída (200 OK):** 
 ```json
@@ -99,15 +99,16 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
   "status": "success",
   "data": {
     "stats": {
-      "quizzes_played": 35,
-      "correct_answers": 20,
+      "quizzesPlayed": 35,
       "accuracy": 57
     }
   }
 }
+// quizzesPlayed = total de games sessions do jogador
+// acurracy = total pontos do jogador / total de games sessions do jogador * 100
 ```
 
-#### 🔹 `PUT /api/users/me/avatar`
+#### 🔹 `PUT /app/users/me/avatar`
 **Descrição:** Atualiza o avatar (foto de perfil) do usuário.
 **Entrada (Body/JSON):**
 ```json
@@ -135,7 +136,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 
 ### 2. Quizzes (Módulo do Jogo Diário)
 
-#### 🔹 `GET /api/quiz/daily`
+#### 🔹 `GET /app/quiz/daily`
 **Descrição:** Traz as perguntas do dia e o estado da sessão atual do usuário.
 **Lógica Backend:**
 1. Retorna a lista de perguntas do quiz diário.
@@ -176,9 +177,11 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
     }
   }
 }
+// se a questao for do tipo MULTIPLE_CHOICE, TRUE_FALSE, ORDERING o campo answer vem escrito HIDDEN
+// se a questao for do tipo GUESS_THE_WORD ou WORDLE o campo answer vem coma resposta encriptada em base64
 ```
 
-#### 🔹 `POST /api/quiz/answer`
+#### 🔹 `POST /app/quiz/answer`
 **Descrição:** Valida a resposta da questão e salva no log de atividades, atualizando pontuação em tempo real.
 **Entrada (Body/JSON):**
 ```json
@@ -204,7 +207,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 2. Calcula pontos baseado em `basePoints` e no multiplicador por `attempts` (nos jogos de forca/adivinhação há penalidade por tentativas).
 3. Adiciona os `points_earned` na conta do usuário, e atualiza as estatísticas do `daily_quiz_attempts_db` e do `answers_log_db`.
 
-#### 🔹 `POST /api/quiz/advance`
+#### 🔹 `POST /app/quiz/advance`
 **Descrição:** Avisa ao servidor que o usuário avançou o ponteiro do Quiz, gravando o index, e finaliza logicamente.
 **Entrada (Body/JSON):**
 ```json
@@ -225,7 +228,7 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 
 ### 3. Ranking
 
-#### 🔹 `GET /api/ranking`
+#### 🔹 `GET /app/ranking`
 **Descrição:** Retorna os jogadores ordenados por pontuação baseados na categoria enviada.
 **Parâmetros (Query):** `type=weekly|general`
 **Saída (200 OK):**

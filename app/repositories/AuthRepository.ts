@@ -104,8 +104,7 @@ export class AuthRepository {
       status: "success",
       data: {
         stats: {
-          quizzes_played: activities.length,
-          correct_answers: activities.filter((a: any) => a.correct).length,
+          quizzesPlayed: activities.length,
           accuracy:
             activities.length > 0
               ? Math.round(
