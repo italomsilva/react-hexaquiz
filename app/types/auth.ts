@@ -14,6 +14,7 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, username: string, password: string, profileImage: string) => Promise<boolean>;
   updateAvatar: (avatarUrl: string) => Promise<boolean>;
+  updateProfile: (data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 }

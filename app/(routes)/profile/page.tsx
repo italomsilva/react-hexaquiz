@@ -13,11 +13,18 @@ import { AVATARS } from "@/app/constants/avatars";
 
 export default function ProfilePage() {
   const theme = useTheme();
-  const { user, logout, updateAvatar } = useAuth();
+  const { user, logout, updateAvatar, updateProfile } = useAuth();
   const [stats, setStats] = useState({ quizzes_played: 0, accuracy: 0 });
   
-  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  
+  const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -29,15 +36,39 @@ export default function ProfilePage() {
       if (user.profileImage && user.profileImage !== "N/A") {
         setSelectedAvatar(user.profileImage);
       }
+      setEditName(user.name || "");
+      setEditUsername(user.username || "");
     }
   }, [user]);
 
-  const handleSaveAvatar = async () => {
-    if (selectedAvatar) {
-      const success = await updateAvatar(selectedAvatar);
-      if (success) {
-        setIsEditingAvatar(false);
+  const handleSaveProfile = async () => {
+    setError("");
+
+    if (newPassword) {
+      if (newPassword.length < 8) {
+        setError("A nova senha deve ter no mínimo 8 caracteres");
+        return;
       }
+      if (newPassword !== confirmPassword) {
+        setError("As senhas não coincidem");
+        return;
+      }
+    }
+
+    setIsLoading(true);
+    const success = await updateProfile({ 
+      name: editName, 
+      username: editUsername,
+      avatarUrl: selectedAvatar,
+      newPassword: newPassword || undefined
+    });
+    setIsLoading(false);
+    if (success) {
+      setIsEditingProfile(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } else {
+      setError("Erro ao atualizar perfil");
     }
   };
 
@@ -67,7 +98,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <button 
-                onClick={() => setIsEditingAvatar(true)}
+                onClick={() => setIsEditingProfile(true)}
                 className="absolute bottom-0 right-0 p-2 bg-primary rounded-full border border-background shadow-lg hover:scale-110 transition-transform cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -100,7 +131,14 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-4 pt-4 border-t border-border-standard">
-              <div className="pt-6">
+              <Button
+                onClick={() => setIsEditingProfile(true)}
+                variant="outline"
+                fullWidth
+              >
+                EDITAR PERFIL
+              </Button>
+              <div className="pt-2">
                 <Button
                   onClick={logout}
                   variant="outline"
@@ -120,25 +158,82 @@ export default function ProfilePage() {
           </footer>
         </main>
         
-        {isEditingAvatar && (
+        {isEditingProfile && (
           <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-surface border border-border-standard rounded-2xl w-full max-w-md p-6 space-y-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="bg-surface border border-border-standard rounded-2xl w-full max-w-lg p-6 space-y-6 shadow-2xl animate-in zoom-in-95 duration-200 h-[90vh] overflow-y-auto">
               <div className="text-center space-y-2">
-                <h3 className="text-2xl font-black italic tracking-tighter text-primary">Trocar Avatar</h3>
-                <p className="text-sm font-medium text-foreground/60">Escolha como você quer ser visto</p>
+                <h3 className="text-2xl font-black italic tracking-tighter text-primary">Editar Perfil</h3>
+                <p className="text-sm font-medium text-foreground/60">Mantenha seus dados e avatar atualizados</p>
               </div>
               
-              <AvatarSelector
-                selectedAvatar={selectedAvatar}
-                onSelect={setSelectedAvatar}
-              />
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Avatar</label>
+                  <AvatarSelector
+                    selectedAvatar={selectedAvatar}
+                    onSelect={setSelectedAvatar}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Nome Completo</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                      placeholder="Seu nome"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Usuário</label>
+                    <input
+                      type="text"
+                      value={editUsername}
+                      onChange={(e) => setEditUsername(e.target.value)}
+                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                      placeholder="Seu usuário"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border-subtle py-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Nova Senha</label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                      placeholder="Deixe em branco para manter"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Confirmar Senha</label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                      placeholder="Confirmação"
+                    />
+                  </div>
+                </div>
+              </div>
               
-              <div className="grid grid-cols-2 gap-3 pt-4">
-                <Button variant="outline" fullWidth onClick={() => setIsEditingAvatar(false)}>
+              {error && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/50 text-red-500 text-xs font-bold text-center">
+                  {error}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <Button variant="outline" fullWidth onClick={() => { setIsEditingProfile(false); setError(""); }} disabled={isLoading}>
                   Cancelar
                 </Button>
-                <Button fullWidth onClick={handleSaveAvatar}>
-                  Salvar
+                <Button fullWidth onClick={handleSaveProfile} disabled={isLoading}>
+                  {isLoading ? "Salvando..." : "Salvar Alterações"}
                 </Button>
               </div>
             </div>

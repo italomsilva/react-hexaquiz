@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  const [isResetPasswordMode, setIsResetPasswordMode] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +33,12 @@ export default function LoginPage() {
 
     if (isRegisterMode && password !== confirmPassword) {
       setError("As senhas não coincidem");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("A senha deve ter no mínimo 8 caracteres");
       setIsLoading(false);
       return;
     }
@@ -57,6 +64,21 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleResetPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    const subject = encodeURIComponent("Solicitação de Redefinição de Senha - HexaQuiz");
+    const body = encodeURIComponent(
+      `Olá Desenvolvedores,\n\nGostaria de solicitar a redefinição da minha senha.\n\n` +
+      `Dados para validação:\n` +
+      `- Nome Completo: ${name}\n` +
+      `- E-mail: ${email}\n` +
+      `- Usuário: ${username}\n\n` +
+      `Obrigado!`
+    );
+    
+    window.location.href = `mailto:italo.silva62@aluno.ifce.edu.br?subject=${subject}&body=${body}`;
   };
 
   const EyeIcon = () => (
@@ -86,30 +108,36 @@ export default function LoginPage() {
             QUIZ<span className="text-foreground">2026</span>
           </h1>
           <p className="text-gray-400 font-medium tracking-tight">
-            {isRegisterMode ? "Crie sua conta para participar" : "Pronto para o hexa?"}
+            {isResetPasswordMode 
+              ? "Recuperação de Acesso" 
+              : isRegisterMode 
+                ? "Crie sua conta para participar" 
+                : "Pronto para o hexa?"}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="w-full space-y-5 bg-surface border border-border-subtle p-8 rounded-2xl shadow-2xl transition-all duration-500 overflow-hidden">
           {/* Alternador de Modo (Switcher) */}
-          <div className="flex p-1 bg-background/50 border border-border-subtle rounded-xl mb-6">
-            <button
-              type="button"
-              onClick={() => { setIsRegisterMode(false); setError(""); }}
-              className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all duration-300 ${!isRegisterMode ? "bg-primary text-background" : "text-foreground/40"}`}
-            >
-              ENTRAR
-            </button>
-            <button
-              type="button"
-              onClick={() => { setIsRegisterMode(true); setError(""); }}
-              className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all duration-300 ${isRegisterMode ? "bg-primary text-background" : "text-foreground/40"}`}
-            >
-              CADASTRAR
-            </button>
-          </div>
+          {!isResetPasswordMode && (
+            <div className="flex p-1 bg-background/50 border border-border-subtle rounded-xl mb-6">
+              <button
+                type="button"
+                onClick={() => { setIsRegisterMode(false); setError(""); }}
+                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all duration-300 ${!isRegisterMode ? "bg-primary text-background" : "text-foreground/40"}`}
+              >
+                ENTRAR
+              </button>
+              <button
+                type="button"
+                onClick={() => { setIsRegisterMode(true); setError(""); }}
+                className={`flex-1 py-3 text-xs font-black tracking-widest rounded-lg transition-all duration-300 ${isRegisterMode ? "bg-primary text-background" : "text-foreground/40"}`}
+              >
+                CADASTRAR
+              </button>
+            </div>
+          )}
 
-          <div className="space-y-5 transition-all duration-300">
+          <div className={`space-y-5 transition-all duration-300 ${isResetPasswordMode ? 'hidden' : 'block'}`}>
             {isRegisterMode && (
               <div className="space-y-5 animate-slide-down">
                 <Input
@@ -193,17 +221,67 @@ export default function LoginPage() {
             </div>
           )}
 
-          {!isRegisterMode && (
+          {!isRegisterMode && !isResetPasswordMode && (
             <div className="flex justify-end mt-1">
-              <button type="button" className="text-sm font-medium text-foreground/40 hover:text-primary transition-colors">
+              <button 
+                type="button" 
+                onClick={() => {
+                  setIsResetPasswordMode(true);
+                  setError("");
+                }}
+                className="text-sm font-medium text-foreground/40 hover:text-primary transition-colors"
+              >
                 Redefinir Senha
               </button>
             </div>
           )}
 
-          <Button type="submit" fullWidth disabled={isLoading} className="mt-6">
-            {isLoading ? (isRegisterMode ? "Criando..." : "Entrando...") : (isRegisterMode ? "Criar Conta" : "Entrar")}
-          </Button>
+          {!isResetPasswordMode ? (
+            <Button type="submit" fullWidth disabled={isLoading} className="mt-6">
+              {isLoading ? (isRegisterMode ? "Criando..." : "Entrando...") : (isRegisterMode ? "Criar Conta" : "Entrar")}
+            </Button>
+          ) : (
+            <div className="space-y-4 pt-4 animate-slide-down">
+              <p className="text-sm text-gray-400 text-center mb-4">
+                Envie seus dados para os desenvolvedores solicitando a redefinição de sua senha.
+              </p>
+              <Input
+                label="Nome Completo"
+                placeholder="Seu nome completo"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <Input
+                label="E-mail"
+                type="email"
+                placeholder="seu@email.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                label="Usuário"
+                placeholder="Seu nome de usuário"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              
+              <div className="flex flex-col gap-3 mt-6">
+                <Button type="button" onClick={handleResetPassword} fullWidth>
+                  Enviar E-mail para Desenvolvedores
+                </Button>
+                <button 
+                  type="button" 
+                  onClick={() => setIsResetPasswordMode(false)}
+                  className="text-sm font-bold text-primary hover:underline transition-all"
+                >
+                  Voltar para o Login
+                </button>
+              </div>
+            </div>
+          )}
         </form>
 
         <div className="text-center text-sm font-medium text-foreground/40">

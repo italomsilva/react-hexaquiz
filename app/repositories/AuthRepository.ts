@@ -61,6 +61,14 @@ export class AuthRepository {
   ): Promise<ApiResponse<User>> {
     await delay(800); // Fake latency
 
+    if (password.length < 8) {
+      return {
+        status: "error",
+        data: null,
+        error: { code: "INVALID_PASSWORD", message: "A senha deve ter no mínimo 8 caracteres" },
+      };
+    }
+
     const savedUsersStr = localStorage.getItem("quiz_users_db");
     const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
 
@@ -142,6 +150,67 @@ export class AuthRepository {
 
     if (index !== -1) {
       users[index].profileImage = avatarUrl;
+      localStorage.setItem("quiz_users_db", JSON.stringify(users));
+      
+      const u = users[index];
+      return {
+        status: "success",
+        data: {
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          username: u.username,
+          totalPoints: u.totalPoints || 0,
+          createdAt: u.createdAt || new Date().toISOString(),
+          profileImage: u.profileImage,
+        },
+      };
+    }
+
+    return {
+      status: "error",
+      data: null,
+      error: { code: "NOT_FOUND", message: "Usuário não encontrado" },
+    };
+  }
+
+  static async updateProfile(userId: string, data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<ApiResponse<User>> {
+    await delay(500);
+
+    if (data.newPassword && data.newPassword.length < 8) {
+      return {
+        status: "error",
+        data: null,
+        error: { code: "INVALID_PASSWORD", message: "A senha deve ter no mínimo 8 caracteres" },
+      };
+    }
+
+    if (userId === "mock-1") {
+      return {
+        status: "success",
+        data: {
+          id: "mock-1",
+          name: data.name || "Usuário Teste",
+          email: data.email || "teste@gmail.com",
+          username: data.username || "teste",
+          totalPoints: 850,
+          createdAt: new Date().toISOString(),
+          profileImage: data.avatarUrl || "N/A",
+        },
+      };
+    }
+
+    const savedUsersStr = localStorage.getItem("quiz_users_db");
+    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
+    const index = users.findIndex((u: any) => u.id === userId);
+
+    if (index !== -1) {
+      if (data.name) users[index].name = data.name;
+      if (data.username) users[index].username = data.username;
+      if (data.email) users[index].email = data.email;
+      if (data.avatarUrl) users[index].profileImage = data.avatarUrl;
+      if (data.newPassword) users[index].password = data.newPassword;
+      
       localStorage.setItem("quiz_users_db", JSON.stringify(users));
       
       const u = users[index];

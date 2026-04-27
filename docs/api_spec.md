@@ -132,6 +132,34 @@ Para garantir um padrão sênior, previsível e facilitar a tipagem no Frontend 
 }
 ```
 
+#### 🔹 `PUT /app/users/me`
+**Descrição:** Atualiza os dados cadastrais do usuário (nome, e-mail, usuário, avatar e senha).
+**Entrada (Body/JSON):**
+```json
+{
+  "name": "Neymar Santos Jr",
+  "email": "ney.jr@selecao.com",
+  "username": "neymarjr_oficial",
+  "avatarUrl": "/images/avatar/avatar_08.jpeg",
+  "newPassword": "newSecurePassword"
+}
+```
+**Saída (200 OK):**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": "uuid",
+    "name": "Neymar Santos Jr",
+    "email": "ney.jr@selecao.com",
+    "username": "neymarjr_oficial",
+    "totalPoints": 850,
+    "createdAt": "2026-04-27T10:00:00Z",
+    "profileImage": "/images/avatar/avatar_08.jpeg"
+  }
+}
+```
+
 ---
 
 ### 2. Quizzes (Módulo do Jogo Diário)

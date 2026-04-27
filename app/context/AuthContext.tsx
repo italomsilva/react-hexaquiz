@@ -65,6 +65,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
+  const updateProfile = async (data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<boolean> => {
+    if (!user) return false;
+    const res = await AuthRepository.updateProfile(user.id, data);
+    if (res.status === "success" && res.data) {
+      setUser(res.data);
+      localStorage.setItem("quiz_user", JSON.stringify(res.data));
+      return true;
+    }
+    return false;
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("quiz_user");
@@ -72,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, updateAvatar, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, updateAvatar, updateProfile, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
