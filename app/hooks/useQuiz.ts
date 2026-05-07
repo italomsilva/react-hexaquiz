@@ -58,7 +58,7 @@ export const useQuiz = () => {
       }
     }
 
-    const response = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt);
+    const response = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt, currentQuestion.basePoints);
     const result = response.data;
 
     setIsValidating(false);

@@ -1,55 +1,44 @@
 import { User } from "../types/auth";
-import { delay } from "../utils/delay";
 import { ApiResponse } from "../types/api";
+import { apiClient } from "../utils/apiClient";
 
 export class AuthRepository {
   static async login(
     username: string,
     password: string,
   ): Promise<ApiResponse<User>> {
-    await delay(600); // Fake latency
+    try {
+      const response = await apiClient.post<any>("/user/login", {
+        username,
+        password
+      });
 
-    if (username === "teste" && password === "12345678") {
+      if (response && response.tokens && response.tokens.accessToken) {
+        localStorage.setItem("hexaquiz_jwt", response.tokens.accessToken);
+      }
+
+      const userData = response.user || response;
+      const user: User = {
+        id: userData.id,
+        name: userData.name,
+        username: userData.username,
+        email: "N/A", // Não retornado pelo backend
+        profileUser: userData.profileUser || "N/A",
+        totalPoints: 0, // Será atualizado por outra rota ou mantido localmente
+        createdAt: userData.createdAt || new Date().toISOString()
+      };
+
       return {
         status: "success",
-        data: {
-          id: "mock-1",
-          name: "Usuário Teste",
-          email: "teste@gmail.com",
-          username: "teste",
-          totalPoints: 850,
-          createdAt: new Date().toISOString(),
-          profileImage: "N/A",
-        },
+        data: user,
       };
-    }
-
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
-
-    const foundUser = users.find(
-      (u: any) => u.username === username && u.password === password,
-    );
-    if (foundUser) {
+    } catch (error: any) {
       return {
-        status: "success",
-        data: {
-          id: foundUser.id || Math.random().toString(36).substr(2, 9),
-          name: foundUser.name,
-          email: foundUser.email,
-          username: foundUser.username,
-          totalPoints: foundUser.totalPoints || 0,
-          createdAt: foundUser.createdAt || new Date().toISOString(),
-          profileImage: foundUser.profileImage,
-        },
+        status: "error",
+        data: null,
+        error: { code: "UNAUTHORIZED", message: error.message || "Credenciais inválidas" },
       };
     }
-
-    return {
-      status: "error",
-      data: null,
-      error: { code: "UNAUTHORIZED", message: "Credenciais inválidas" },
-    };
   }
 
   static async register(
@@ -57,181 +46,153 @@ export class AuthRepository {
     email: string,
     username: string,
     password: string,
-    profileImage: string,
+    profileUser: string,
   ): Promise<ApiResponse<User>> {
-    await delay(800); // Fake latency
+    try {
+      if (password.length < 8) {
+        throw new Error("A senha deve ter no mínimo 8 caracteres");
+      }
 
-    if (password.length < 8) {
-      return {
-        status: "error",
-        data: null,
-        error: { code: "INVALID_PASSWORD", message: "A senha deve ter no mínimo 8 caracteres" },
+      const userData = await apiClient.post<any>("/user/create", {
+        name,
+        username,
+        email,
+        password,
+        profileUser
+      });
+
+      // O create não retorna token, então talvez precisamos logar automaticamente,
+      // ou apenas retornar o usuário criado
+      const user: User = {
+        id: userData.id,
+        name: userData.name,
+        username: userData.username,
+        email: email, // Usamos o email passado
+        profileUser: userData.profileUser || profileUser,
+        totalPoints: 0,
+        createdAt: userData.createdAt || new Date().toISOString()
       };
-    }
 
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
-
-    if (users.find((u: any) => u.username === username || u.email === email)) {
+      return {
+        status: "success",
+        data: user,
+      };
+    } catch (error: any) {
       return {
         status: "error",
         data: null,
         error: {
-          code: "USER_EXISTS",
-          message: "O e-mail ou nome de usuário já está em uso",
+          code: "REGISTRATION_ERROR",
+          message: error.message || "Erro ao registrar usuário",
         },
       };
     }
-
-    const newUser = {
-      id: Math.random().toString(36).substr(2, 9),
-      name,
-      email,
-      username,
-      password,
-      points: 0,
-      profileImage,
-    };
-
-    users.push(newUser);
-    localStorage.setItem("quiz_users_db", JSON.stringify(users));
-
-    return {
-      status: "success",
-      data: { id: newUser.id, name, email, username, totalPoints: 0, createdAt: new Date().toISOString(), profileImage: newUser.profileImage },
-    };
   }
 
   static async getProfile(
-    userIdStr?: string,
+    userIdStr: string,
   ): Promise<ApiResponse<{ stats: any }>> {
-    await delay(400);
-    const savedActivities = localStorage.getItem("answers_log_db");
-    const activities = savedActivities ? JSON.parse(savedActivities) : [];
-    return {
-      status: "success",
-      data: {
-        stats: {
-          quizzesPlayed: activities.length,
-          accuracy:
-            activities.length > 0
-              ? Math.round(
-                  (activities.filter((a: any) => a.correct).length /
-                    activities.length) *
-                    100,
-                )
-              : 0,
+    try {
+      const stats = await apiClient.get<any>(`/statistics/${userIdStr}`);
+      return {
+        status: "success",
+        data: {
+          stats: {
+            quizzesPlayed: stats.quizzesPlayed || 0,
+            accuracy: stats.acurracy || 0, // Backend typo: acurracy
+          },
         },
-      },
-    };
+      };
+    } catch (error: any) {
+      // Se falhar (ex: sem quizzes jogados), fallback para zeros
+      return {
+        status: "success",
+        data: {
+          stats: { quizzesPlayed: 0, accuracy: 0 },
+        },
+      };
+    }
   }
 
   static async updateAvatar(userId: string, avatarUrl: string): Promise<ApiResponse<User>> {
-    await delay(300);
-
-    if (userId === "mock-1") {
-      return {
-        status: "success",
-        data: {
-          id: "mock-1",
-          name: "Usuário Teste",
-          email: "teste@gmail.com",
-          username: "teste",
-          totalPoints: 850,
-          createdAt: new Date().toISOString(),
-          profileImage: avatarUrl,
-        },
-      };
-    }
-
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
-    const index = users.findIndex((u: any) => u.id === userId);
-
-    if (index !== -1) {
-      users[index].profileImage = avatarUrl;
-      localStorage.setItem("quiz_users_db", JSON.stringify(users));
+    try {
+      const userData = await apiClient.patch<any>(`/user/update/image/${userId}`, {
+        profileImage: avatarUrl // O DTO RequestUpdateProfileImageDto recebe profileImage (string)
+      });
       
-      const u = users[index];
+      const savedUserStr = localStorage.getItem("quiz_user");
+      let currentUser: any = {};
+      if (savedUserStr) {
+        currentUser = JSON.parse(savedUserStr);
+      }
+
+      const user: User = {
+        id: userData.id || currentUser.id,
+        name: userData.name || currentUser.name,
+        username: userData.username || currentUser.username,
+        email: currentUser.email || "N/A",
+        profileUser: userData.profileUser || avatarUrl,
+        totalPoints: currentUser.totalPoints || 0,
+        createdAt: userData.createdAt || currentUser.createdAt || new Date().toISOString()
+      };
+
       return {
         status: "success",
-        data: {
-          id: u.id,
-          name: u.name,
-          email: u.email,
-          username: u.username,
-          totalPoints: u.totalPoints || 0,
-          createdAt: u.createdAt || new Date().toISOString(),
-          profileImage: u.profileImage,
-        },
+        data: user,
       };
-    }
-
-    return {
-      status: "error",
-      data: null,
-      error: { code: "NOT_FOUND", message: "Usuário não encontrado" },
-    };
-  }
-
-  static async updateProfile(userId: string, data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<ApiResponse<User>> {
-    await delay(500);
-
-    if (data.newPassword && data.newPassword.length < 8) {
+    } catch (error: any) {
       return {
         status: "error",
         data: null,
-        error: { code: "INVALID_PASSWORD", message: "A senha deve ter no mínimo 8 caracteres" },
+        error: { code: "UPDATE_ERROR", message: error.message || "Erro ao atualizar avatar" },
       };
     }
+  }
 
-    if (userId === "mock-1") {
+  static async updateProfile(userId: string, data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<ApiResponse<User>> {
+    try {
+      if (data.newPassword) {
+        if (data.newPassword.length < 8) {
+          throw new Error("A senha deve ter no mínimo 8 caracteres");
+        }
+        await apiClient.patch<any>(`/user/update/password/${userId}`, {
+          password: data.newPassword
+        });
+      }
+
+      if (data.avatarUrl) {
+        await apiClient.patch<any>(`/user/update/image/${userId}`, {
+          profileImage: data.avatarUrl
+        });
+      }
+
+      // Atualização simulada para os campos name, username e email
+      const savedUserStr = localStorage.getItem("quiz_user");
+      let currentUser: any = {};
+      if (savedUserStr) {
+        currentUser = JSON.parse(savedUserStr);
+      }
+
+      const user: User = {
+        id: userId,
+        name: data.name || currentUser.name,
+        username: data.username || currentUser.username,
+        email: data.email || currentUser.email || "N/A",
+        profileUser: data.avatarUrl || currentUser.profileUser || "N/A",
+        totalPoints: currentUser.totalPoints || 0,
+        createdAt: currentUser.createdAt || new Date().toISOString()
+      };
+
       return {
         status: "success",
-        data: {
-          id: "mock-1",
-          name: data.name || "Usuário Teste",
-          email: data.email || "teste@gmail.com",
-          username: data.username || "teste",
-          totalPoints: 850,
-          createdAt: new Date().toISOString(),
-          profileImage: data.avatarUrl || "N/A",
-        },
+        data: user,
       };
-    }
-
-    const savedUsersStr = localStorage.getItem("quiz_users_db");
-    const users = savedUsersStr ? JSON.parse(savedUsersStr) : [];
-    const index = users.findIndex((u: any) => u.id === userId);
-
-    if (index !== -1) {
-      if (data.name) users[index].name = data.name;
-      if (data.username) users[index].username = data.username;
-      if (data.email) users[index].email = data.email;
-      if (data.avatarUrl) users[index].profileImage = data.avatarUrl;
-      if (data.newPassword) users[index].password = data.newPassword;
-      
-      localStorage.setItem("quiz_users_db", JSON.stringify(users));
-      
-      const u = users[index];
+    } catch (error: any) {
       return {
-        status: "success",
-        data: {
-          id: u.id,
-          name: u.name,
-          email: u.email,
-          username: u.username,
-          totalPoints: u.totalPoints || 0,
-          createdAt: u.createdAt || new Date().toISOString(),
-          profileImage: u.profileImage,
-        },
+        status: "error",
+        data: null,
+        error: { code: "UPDATE_ERROR", message: error.message || "Erro ao atualizar perfil" },
       };
     }
-
-    return {
-      status: "error",
-      data: null,
-      error: { code: "NOT_FOUND", message: "Usuário não encontrado" },
-    };
   }
 }

@@ -15,9 +15,9 @@ export const Header = () => {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <Link href="/profile" className="w-10 h-10 rounded-full bg-surface-elevated border border-border-standard flex items-center justify-center overflow-hidden hover:border-primary transition-colors relative">
-            {user?.profileImage && user.profileImage !== "N/A" ? (
+            {user?.profileUser && user.profileUser !== "N/A" ? (
               <Image
-                src={user.profileImage}
+                src={user.profileUser}
                 alt={user.name}
                 fill
                 className="object-cover"

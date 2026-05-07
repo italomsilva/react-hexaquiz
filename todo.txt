@@ -1,0 +1,4 @@
+- Editar nome, username e email do usuário não é suportado atualmente pelo backend. Por enquanto, essa funcionalidade está sendo simulada localmente no frontend. (Futuramente, implementar na API)
+- Pontuação Total: O backend não retorna o total de pontos do usuário nas rotas de login ou estatísticas, apenas a pontuação da sessão atual ou no ranking. A pontuação total (XP acumulado) do perfil está sendo simulada/mockada localmente no frontend.
+- O endpoint de Login (PUT /hexaquiz/user/login) e Create (POST /hexaquiz/user/create) devem estar liberados de autenticação no backend (SecurityConfiguration). Se você receber erro de permissão (403), ajuste o backend.
+- Reiniciar Quiz (resetSession): A API não suporta reiniciar a sessão de quiz diário do usuário. A função foi adaptada para apenas retornar sucesso, sem efeito real no backend.

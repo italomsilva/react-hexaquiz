@@ -40,9 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const register = async (name: string, email: string, username: string, password: string, profileImage: string): Promise<boolean> => {
+  const register = async (name: string, email: string, username: string, password: string, profileUser: string): Promise<boolean> => {
     setIsLoading(true);
-    const res = await AuthRepository.register(name, email, username, password, profileImage);
+    const res = await AuthRepository.register(name, email, username, password, profileUser);
     setIsLoading(false);
 
     if (res.status === "success" && res.data) {

@@ -33,8 +33,8 @@ export default function ProfilePage() {
           setStats(res.data.stats);
         }
       });
-      if (user.profileImage && user.profileImage !== "N/A") {
-        setSelectedAvatar(user.profileImage);
+      if (user.profileUser && user.profileUser !== "N/A") {
+        setSelectedAvatar(user.profileUser);
       }
       setEditName(user.name || "");
       setEditUsername(user.username || "");
@@ -82,9 +82,9 @@ export default function ProfilePage() {
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-surface border-2 border-primary p-1">
                 <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden relative">
-                  {user?.profileImage && user.profileImage !== "N/A" ? (
+                  {user?.profileUser && user.profileUser !== "N/A" ? (
                     <Image
-                      src={user.profileImage}
+                      src={user.profileUser}
                       alt={user.name}
                       fill
                       className="object-cover"
