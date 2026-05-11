@@ -33,7 +33,7 @@ export default function HomePage() {
               Bem-vindo de volta
             </p>
             <h2 className="text-3xl font-black italic tracking-tight">
-              OLÁ, <span className="text-primary">{user?.email.split('@')[0].toUpperCase()}</span>
+              OLÁ, <span className="text-primary">{user?.username}</span>
             </h2>
           </section>
 

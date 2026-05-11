@@ -14,7 +14,7 @@ import { AVATARS } from "@/app/constants/avatars";
 export default function ProfilePage() {
   const theme = useTheme();
   const { user, logout, updateAvatar, updateProfile } = useAuth();
-  const [stats, setStats] = useState({ quizzes_played: 0, accuracy: 0 });
+  const [stats, setStats] = useState({ quizzesPlayed: 0, accuracy: 0 });
   
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
@@ -36,8 +36,8 @@ export default function ProfilePage() {
       if (user.profileUser && user.profileUser !== "N/A") {
         setSelectedAvatar(user.profileUser);
       }
-      setEditName(user.name || "");
-      setEditUsername(user.username || "");
+      setEditName(user.name || "N/A");
+      setEditUsername(user.username || "N/A");
     }
   }, [user]);
 
@@ -76,9 +76,10 @@ export default function ProfilePage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-
+    
         <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <section className="flex flex-col items-center space-y-4">
+            {/* profile image */}
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-surface border-2 border-primary p-1">
                 <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden relative">
@@ -110,7 +111,7 @@ export default function ProfilePage() {
 
             <div className="text-center">
               <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>@{user?.username}</h2>
-              <p className="text-foreground/60 text-sm font-medium">{user?.email}</p>
+              <p className="text-foreground/60 text-sm font-medium">{user?.name}</p>
               <div className="mt-4 p-3 bg-surface-elevated rounded-xl border border-border-subtle inline-block min-w-[120px]">
                 <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">XP Acumulado</div>
                 <div className="text-xl font-black italic text-neon text-shadow-glow">{user?.totalPoints || 0}</div>
@@ -122,7 +123,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-foreground/40 uppercase tracking-widest">Partidas</div>
-                <div className="text-2xl font-black italic text-primary">{stats.quizzes_played}</div>
+                <div className="text-2xl font-black italic text-primary">{stats.quizzesPlayed}</div>
               </div>
               <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-foreground/40 uppercase tracking-widest">Precisão</div>

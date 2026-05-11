@@ -58,18 +58,34 @@ export const useQuiz = () => {
       }
     }
 
-    const response = await QuizRepository.submitAnswer(currentQuestion.id, answer, nextAttempt, currentQuestion.basePoints);
+    let payloadAnswer = answer;
+    if (currentQuestion.type === QuestionType.MULTIPLE_CHOICE) {
+      const option = currentQuestion.options.find(o => o.id === answer);
+      if (option && option.text) {
+        payloadAnswer = option.text;
+      }
+    }
+
+    const response = await QuizRepository.submitAnswer(currentQuestion.id, payloadAnswer, currentQuestion.basePoints);
     const result = response.data;
 
     setIsValidating(false);
 
-    if (result && result.correct) {
-      setScore((prev) => prev + result.points_earned);
-      setCorrectAnswersCount(prev => prev + 1);
-      setCorrectAnswer(result.correct_answer_payload);
-      setIsAnswered(true);
-    } else if (result) {
-      setCorrectAnswer(result.correct_answer_payload);
+    if (result) {
+      let finalCorrectAnswer = result.correct_answer_payload;
+      if (currentQuestion.type === QuestionType.MULTIPLE_CHOICE) {
+        const correctOption = currentQuestion.options.find(o => o.text === finalCorrectAnswer);
+        if (correctOption) {
+          finalCorrectAnswer = correctOption.id;
+        }
+      }
+
+      if (result.correct) {
+        setScore((prev) => prev + result.points_earned);
+        setCorrectAnswersCount(prev => prev + 1);
+      }
+      
+      setCorrectAnswer(finalCorrectAnswer);
       setIsAnswered(true);
     }
   };

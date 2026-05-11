@@ -53,7 +53,7 @@ export class AuthRepository {
         throw new Error("A senha deve ter no mínimo 8 caracteres");
       }
 
-      const userData = await apiClient.post<any>("/user/create", {
+      const response = await apiClient.post<any>("/user/create", {
         name,
         username,
         email,
@@ -61,8 +61,13 @@ export class AuthRepository {
         profileUser
       });
 
-      // O create não retorna token, então talvez precisamos logar automaticamente,
-      // ou apenas retornar o usuário criado
+      // O create agora retorna um ResponseLoginDto com tokens e user
+      if (response && response.tokens && response.tokens.accessToken) {
+        localStorage.setItem("hexaquiz_jwt", response.tokens.accessToken);
+      }
+
+      const userData = response.user || response;
+
       const user: User = {
         id: userData.id,
         name: userData.name,

@@ -28,7 +28,8 @@ export class QuizRepository {
         options: q.options ? q.options.map((opt: any) => ({
            id: opt.id,
            text: opt.text,
-           image: opt.image || undefined
+           image: opt.image || undefined,
+           questionId: q.id
         })) : [],
         answer: q.answer,
         basePoints: q.basePoints || 100
@@ -47,7 +48,7 @@ export class QuizRepository {
     }
   }
 
-  static async submitAnswer(questionId: string, answer: string, attempts: number, basePoints: number): Promise<ApiResponse<{correct: boolean, points_earned: number, correct_answer_payload: string}>> {
+  static async submitAnswer(questionId: string, answer: string, basePoints: number): Promise<ApiResponse<{correct: boolean, points_earned: number, correct_answer_payload: string}>> {
     const loggedUserStr = localStorage.getItem("quiz_user");
     if (!loggedUserStr) {
        throw new Error("Usuário não autenticado");

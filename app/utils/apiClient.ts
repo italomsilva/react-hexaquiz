@@ -1,6 +1,7 @@
 import { ApiResponse } from "../types/api";
 
-const API_BASE_URL = "/api";
+const envUrl ="/api";
+const API_BASE_URL = envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
 
 interface FetchOptions extends RequestInit {
   data?: any;
@@ -17,7 +18,11 @@ export const apiClient = {
 
     // Obter o token JWT salvo no localStorage para autenticar requests
     const token = typeof window !== 'undefined' ? localStorage.getItem("hexaquiz_jwt") : null;
-    if (token) {
+    
+    // Não envia o token para as rotas de login e register
+    const isAuthRoute = endpoint.includes("/user/login") || endpoint.includes("/user/create");
+    
+    if (token && !isAuthRoute) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
