@@ -13,22 +13,26 @@ import { AVATARS } from "@/app/constants/avatars";
 
 export default function RankingPage() {
   const [activeTab, setActiveTab] = useState<"weekly" | "general">("weekly");
-  const [data, setData] = useState<RankingItem[]>([]);
+  const [allRankings, setAllRankings] = useState<{
+    weekly: RankingItem[];
+    geral: RankingItem[];
+  }>({ weekly: [], geral: [] });
   const [isLoading, setIsLoading] = useState(true);
 
-  const hasFetchedRef = React.useRef(false);
   React.useEffect(() => {
-    if (hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
-
     setIsLoading(true);
     RankingRepository.getRanking().then((res) => {
       if (res.status === "success" && res.data) {
-        setData(res.data.top_players);
+        setAllRankings({
+          weekly: res.data.weeklyRanking,
+          geral: res.data.geralRanking,
+        });
       }
       setIsLoading(false);
     });
   }, []);
+
+  const data = activeTab === "weekly" ? allRankings.weekly : allRankings.geral;
 
   return (
     <ProtectedRoute>
