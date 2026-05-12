@@ -5,12 +5,12 @@ import Image from "next/image";
 import { AVATARS } from "@/app/constants/avatars";
 
 interface AvatarSelectorProps {
-  selectedAvatar: string;
-  onSelect: (avatar: string) => void;
+  selectedAvatarIndex: string;
+  onSelect: (index: string) => void;
 }
 
 export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
-  selectedAvatar,
+  selectedAvatarIndex,
   onSelect,
 }) => {
   return (
@@ -23,11 +23,11 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
           <button
             key={index}
             type="button"
-            onClick={() => onSelect(avatar)}
+            onClick={() => onSelect(index.toString())}
             className={`
               relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 group
               ${
-                selectedAvatar === avatar
+                selectedAvatarIndex === index.toString()
                   ? "border-primary scale-105 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.3)]"
                   : "border-transparent hover:border-border-standard grayscale hover:grayscale-0"
               }
@@ -39,7 +39,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            {selectedAvatar === avatar && (
+            {selectedAvatarIndex === index.toString() && (
               <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
                 <div className="bg-primary text-black rounded-full p-0.5 scale-75">
                   <svg

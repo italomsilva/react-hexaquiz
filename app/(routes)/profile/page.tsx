@@ -14,10 +14,10 @@ import { AVATARS } from "@/app/constants/avatars";
 export default function ProfilePage() {
   const theme = useTheme();
   const { user, logout, updateAvatar, updateProfile } = useAuth();
-  const [stats, setStats] = useState({ quizzesPlayed: 0, accuracy: 0 });
+  const [stats, setStats] = useState({ quizzesPlayed: 0, accuracy: 0, points: 0 });
   
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  const [selectedAvatar, setSelectedAvatar] = useState("0");
   
   const [editName, setEditName] = useState("");
   const [editUsername, setEditUsername] = useState("");
@@ -26,8 +26,10 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const hasFetchedRef = React.useRef(false);
   useEffect(() => {
-    if (user) {
+    if (user && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
       AuthRepository.getProfile(user.id).then(res => {
         if (res.status === "success" && res.data?.stats) {
           setStats(res.data.stats);
@@ -59,7 +61,7 @@ export default function ProfilePage() {
     const success = await updateProfile({ 
       name: editName, 
       username: editUsername,
-      avatarUrl: selectedAvatar,
+      avatarIndex: selectedAvatar,
       newPassword: newPassword || undefined
     });
     setIsLoading(false);
@@ -77,7 +79,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
     
-        <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <section className="flex flex-col items-center space-y-4">
             {/* profile image */}
             <div className="relative">
@@ -85,7 +87,7 @@ export default function ProfilePage() {
                 <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden relative">
                   {user?.profileUser && user.profileUser !== "N/A" ? (
                     <Image
-                      src={user.profileUser}
+                      src={AVATARS[parseInt(user.profileUser)] || AVATARS[0]}
                       alt={user.name}
                       fill
                       className="object-cover"
@@ -112,9 +114,9 @@ export default function ProfilePage() {
             <div className="text-center">
               <h2 className={`text-2xl font-bold italic tracking-tighter uppercase`} style={{ color: theme.theme === 'dark' ? 'var(--color-primary-light)' : 'var(--color-primary-dark)' }}>@{user?.username}</h2>
               <p className="text-foreground/60 text-sm font-medium">{user?.name}</p>
-              <div className="mt-4 p-3 bg-surface-elevated rounded-xl border border-border-subtle inline-block min-w-[120px]">
-                <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">XP Acumulado</div>
-                <div className="text-xl font-black italic text-neon text-shadow-glow">{user?.totalPoints || 0}</div>
+              <div className="mt-4 p-3 bg-surface rounded-xl border border-border-subtle inline-block min-w-[120px]">
+                <div className="text-[10px] font-black tracking-widest text-foreground/40 uppercase">Pontos</div>
+                <div className="text-xl font-black italic text-neon text-shadow-glow">{stats.points || 0}</div>
               </div>
             </div>
           </section>
@@ -171,7 +173,7 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Avatar</label>
                   <AvatarSelector
-                    selectedAvatar={selectedAvatar}
+                    selectedAvatarIndex={selectedAvatar}
                     onSelect={setSelectedAvatar}
                   />
                 </div>

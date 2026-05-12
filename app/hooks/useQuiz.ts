@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Question, QuestionType } from "@/app/types/quiz";
 import { QuizRepository } from "@/app/repositories/QuizRepository";
 import { useAuth } from "@/app/context/AuthContext";
@@ -20,7 +20,11 @@ export const useQuiz = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
 
+  const hasFetchedRef = useRef(false);
   useEffect(() => {
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+
     QuizRepository.getDailyQuiz().then(res => {
       const data = res.data;
       if (data) {
@@ -62,7 +66,7 @@ export const useQuiz = () => {
     if (currentQuestion.type === QuestionType.MULTIPLE_CHOICE) {
       const option = currentQuestion.options.find(o => o.id === answer);
       if (option && option.text) {
-        payloadAnswer = option.text;
+        payloadAnswer = option.id;
       }
     }
 

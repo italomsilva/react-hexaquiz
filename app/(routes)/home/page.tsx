@@ -91,10 +91,10 @@ export default function HomePage() {
             <h4 className="text-xs font-black tracking-widest text-gray-500 uppercase">Resumo da Copa</h4>
             <div className="flex items-center justify-between p-3 rounded-lg bg-surface-elevated border border-border-subtle">
               <div className="flex items-center gap-3">
-                <span className="text-xl font-black italic text-foreground/60">#42</span>
+                <span className="text-xl font-black italic text-foreground/60">#{user?.positionRanking == 0 ? 'Não encontrado' : user?.positionRanking}</span>
                 <span className="text-sm font-bold">Sua Posição</span>
               </div>
-              <span className="text-xs font-black text-primary">VER GERAL</span>
+              <Link href="/ranking" className="text-xs font-black text-primary cursor-pointer">VER RANKING</Link>
             </div>
           </div>
         </main>

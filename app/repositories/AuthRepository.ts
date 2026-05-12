@@ -25,7 +25,8 @@ export class AuthRepository {
         email: "N/A", // Não retornado pelo backend
         profileUser: userData.profileUser || "N/A",
         totalPoints: 0, // Será atualizado por outra rota ou mantido localmente
-        createdAt: userData.createdAt || new Date().toISOString()
+        createdAt: userData.createdAt || new Date().toISOString(),
+        positionRanking: response.positionRanking || 0,
       };
 
       return {
@@ -46,7 +47,7 @@ export class AuthRepository {
     email: string,
     username: string,
     password: string,
-    profileUser: string,
+    avatarIndex: string,
   ): Promise<ApiResponse<User>> {
     try {
       if (password.length < 8) {
@@ -58,7 +59,7 @@ export class AuthRepository {
         username,
         email,
         password,
-        profileUser
+        profileUser: avatarIndex
       });
 
       // O create agora retorna um ResponseLoginDto com tokens e user
@@ -73,9 +74,10 @@ export class AuthRepository {
         name: userData.name,
         username: userData.username,
         email: email, // Usamos o email passado
-        profileUser: userData.profileUser || profileUser,
+        profileUser: userData.profileUser || avatarIndex,
         totalPoints: 0,
-        createdAt: userData.createdAt || new Date().toISOString()
+        createdAt: userData.createdAt || new Date().toISOString(),
+        positionRanking: response.positionRanking || 0,
       };
 
       return {
@@ -104,7 +106,8 @@ export class AuthRepository {
         data: {
           stats: {
             quizzesPlayed: stats.quizzesPlayed || 0,
-            accuracy: stats.acurracy || 0, // Backend typo: acurracy
+            accuracy: stats.accuracy.toFixed(2) || 0, // Backend typo: acurracy
+            points: stats.points || 0,
           },
         },
       };
@@ -119,10 +122,10 @@ export class AuthRepository {
     }
   }
 
-  static async updateAvatar(userId: string, avatarUrl: string): Promise<ApiResponse<User>> {
+  static async updateAvatar(userId: string, avatarIndex: string): Promise<ApiResponse<User>> {
     try {
       const userData = await apiClient.patch<any>(`/user/update/image/${userId}`, {
-        profileImage: avatarUrl // O DTO RequestUpdateProfileImageDto recebe profileImage (string)
+        profileImage: avatarIndex // O DTO RequestUpdateProfileImageDto recebe profileImage (string que agora será o índice)
       });
       
       const savedUserStr = localStorage.getItem("quiz_user");
@@ -136,9 +139,10 @@ export class AuthRepository {
         name: userData.name || currentUser.name,
         username: userData.username || currentUser.username,
         email: currentUser.email || "N/A",
-        profileUser: userData.profileUser || avatarUrl,
+        profileUser: userData.profileUser || avatarIndex,
         totalPoints: currentUser.totalPoints || 0,
-        createdAt: userData.createdAt || currentUser.createdAt || new Date().toISOString()
+        createdAt: userData.createdAt || currentUser.createdAt || new Date().toISOString(),
+        positionRanking: userData.positionRanking || 0,
       };
 
       return {
@@ -154,7 +158,7 @@ export class AuthRepository {
     }
   }
 
-  static async updateProfile(userId: string, data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<ApiResponse<User>> {
+  static async updateProfile(userId: string, data: { name?: string, username?: string, email?: string, avatarIndex?: string, newPassword?: string }): Promise<ApiResponse<User>> {
     try {
       if (data.newPassword) {
         if (data.newPassword.length < 8) {
@@ -165,9 +169,9 @@ export class AuthRepository {
         });
       }
 
-      if (data.avatarUrl) {
+      if (data.avatarIndex) {
         await apiClient.patch<any>(`/user/update/image/${userId}`, {
-          profileImage: data.avatarUrl
+          profileImage: data.avatarIndex
         });
       }
 
@@ -183,9 +187,10 @@ export class AuthRepository {
         name: data.name || currentUser.name,
         username: data.username || currentUser.username,
         email: data.email || currentUser.email || "N/A",
-        profileUser: data.avatarUrl || currentUser.profileUser || "N/A",
+        profileUser: data.avatarIndex || currentUser.profileUser || "N/A",
         totalPoints: currentUser.totalPoints || 0,
-        createdAt: currentUser.createdAt || new Date().toISOString()
+        createdAt: currentUser.createdAt || new Date().toISOString(),
+        positionRanking: currentUser.positionRanking || 0,
       };
 
       return {

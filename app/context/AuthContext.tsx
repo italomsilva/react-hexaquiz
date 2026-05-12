@@ -40,9 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const register = async (name: string, email: string, username: string, password: string, profileUser: string): Promise<boolean> => {
+  const register = async (name: string, email: string, username: string, password: string, avatarIndex: string): Promise<boolean> => {
     setIsLoading(true);
-    const res = await AuthRepository.register(name, email, username, password, profileUser);
+    const res = await AuthRepository.register(name, email, username, password, avatarIndex);
     setIsLoading(false);
 
     if (res.status === "success" && res.data) {
@@ -54,9 +54,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const updateAvatar = async (avatarUrl: string): Promise<boolean> => {
+  const updateAvatar = async (avatarIndex: string): Promise<boolean> => {
     if (!user) return false;
-    const res = await AuthRepository.updateAvatar(user.id, avatarUrl);
+    const res = await AuthRepository.updateAvatar(user.id, avatarIndex);
     if (res.status === "success" && res.data) {
       setUser(res.data);
       localStorage.setItem("quiz_user", JSON.stringify(res.data));
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const updateProfile = async (data: { name?: string, username?: string, email?: string, avatarUrl?: string, newPassword?: string }): Promise<boolean> => {
+  const updateProfile = async (data: { name?: string, username?: string, email?: string, avatarIndex?: string, newPassword?: string }): Promise<boolean> => {
     if (!user) return false;
     const res = await AuthRepository.updateProfile(user.id, data);
     if (res.status === "success" && res.data) {

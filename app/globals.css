@@ -12,17 +12,17 @@
   --color-secondary: #002022;
   --color-secondary-hover: #003d31;
 
-  --color-background: #ffffff;
-  --color-foreground: #002022;
-  --color-surface: #f8faf9;
-  --color-surface-elevated: #f0f4f2;
+  --color-background: #f9f9f9;
+  --color-foreground: #1a202c;
+  --color-surface: #e4e4e4;
+  --color-surface-elevated: #f8fafc;
   
-  --color-border-subtle: rgba(0, 32, 34, 0.1);
-  --color-border-standard: rgba(0, 32, 34, 0.2);
+  --color-border-subtle: rgba(0, 0, 0, 0.05);
+  --color-border-standard: rgba(0, 0, 0, 0.1);
   
-  --color-error: #dc2626;
-  --color-success: #16a34a;
-  --color-warning: #ca8a04;
+  --color-error: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
 
   --font-inter: var(--font-inter);
 }
