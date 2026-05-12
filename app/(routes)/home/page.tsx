@@ -11,6 +11,15 @@ import { useTheme } from "@/app/context/ThemeContext";
 export default function HomePage() {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const [rankingError, setRankingError] = React.useState("");
+
+  const handleRankingClick = (e: React.MouseEvent) => {
+    if (!user?.positionRanking || user.positionRanking === 0) {
+      e.preventDefault();
+      setRankingError("Responda o quiz de hoje para entrar no ranking!");
+      setTimeout(() => setRankingError(""), 3000);
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -57,7 +66,11 @@ export default function HomePage() {
 
           {/* Quick Navigation Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <Link href="/ranking" className="group p-6 rounded-xl bg-surface border border-border-subtle hover:border-primary/50 transition-all active:scale-95">
+            <Link 
+              href="/ranking" 
+              onClick={handleRankingClick}
+              className="group p-6 rounded-xl bg-surface border border-border-subtle hover:border-primary/50 transition-all active:scale-95"
+            >
               <div className="flex flex-col items-center space-y-3">
                 <div className="p-3 rounded-lg bg-surface-elevated text-foreground/40 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -88,13 +101,28 @@ export default function HomePage() {
 
           {/* Quick Stats Summary (Mini Ranking) */}
           <div className="rounded-xl bg-surface border border-border-subtle p-6 space-y-4">
-            <h4 className="text-xs font-black tracking-widest text-gray-500 uppercase">Resumo da Copa</h4>
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-black tracking-widest text-gray-500 uppercase">Resumo da Copa</h4>
+              {rankingError && (
+                <span className="text-[10px] font-bold text-red-500 animate-pulse">
+                  {rankingError}
+                </span>
+              )}
+            </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-surface-elevated border border-border-subtle">
               <div className="flex items-center gap-3">
-                <span className="text-xl font-black italic text-foreground/60">#{user?.positionRanking == 0 ? 'Não encontrado' : user?.positionRanking}</span>
+                <span className="text-xl font-black italic text-foreground/60">
+                  {(!user?.positionRanking || user?.positionRanking === 0) ? '---' : `#${user.positionRanking}`}
+                </span>
                 <span className="text-sm font-bold">Sua Posição</span>
               </div>
-              <Link href="/ranking" className="text-xs font-black text-primary cursor-pointer">VER RANKING</Link>
+              <Link 
+                href="/ranking" 
+                onClick={handleRankingClick}
+                className={`text-xs font-black cursor-pointer transition-colors ${(!user?.positionRanking || user?.positionRanking === 0) ? 'text-foreground/20' : 'text-primary'}`}
+              >
+                VER RANKING
+              </Link>
             </div>
           </div>
         </main>

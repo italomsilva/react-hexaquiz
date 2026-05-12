@@ -23,8 +23,9 @@ export default function ProfilePage() {
   const [editUsername, setEditUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState("");
+   const [successMessage, setSuccessMessage] = useState("");
+   const [isLoading, setIsLoading] = useState(false);
 
   const hasFetchedRef = React.useRef(false);
   useEffect(() => {
@@ -43,34 +44,62 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  const handleSaveProfile = async () => {
+  const handleUpdateAvatar = async () => {
     setError("");
+    setSuccessMessage("");
+    setIsLoading(true);
+    const success = await updateAvatar(selectedAvatar);
+    setIsLoading(false);
+    if (success) {
+      setSuccessMessage("Avatar atualizado com sucesso!");
+    } else {
+      setError("Erro ao atualizar avatar");
+    }
+  };
 
-    if (newPassword) {
-      if (newPassword.length < 8) {
-        setError("A nova senha deve ter no mínimo 8 caracteres");
-        return;
-      }
-      if (newPassword !== confirmPassword) {
-        setError("As senhas não coincidem");
-        return;
-      }
+  const handleUpdateInfo = async () => {
+    setError("");
+    setSuccessMessage("");
+    setIsLoading(true);
+    const success = await updateProfile({ 
+      name: editName, 
+      username: editUsername 
+    });
+    setIsLoading(false);
+    if (success) {
+      setSuccessMessage("Dados atualizados com sucesso!");
+    } else {
+      setError("Erro ao atualizar dados");
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    setError("");
+    setSuccessMessage("");
+    if (!newPassword) {
+      setError("Digite a nova senha");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError("A nova senha deve ter no mínimo 8 caracteres");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("As senhas não coincidem");
+      return;
     }
 
     setIsLoading(true);
     const success = await updateProfile({ 
-      name: editName, 
-      username: editUsername,
-      avatarIndex: selectedAvatar,
-      newPassword: newPassword || undefined
+      newPassword: newPassword 
     });
     setIsLoading(false);
     if (success) {
-      setIsEditingProfile(false);
+      setSuccessMessage("Senha alterada com sucesso!");
       setNewPassword("");
       setConfirmPassword("");
     } else {
-      setError("Erro ao atualizar perfil");
+      setError("Erro ao atualizar senha");
     }
   };
 
@@ -169,74 +198,110 @@ export default function ProfilePage() {
                 <p className="text-sm font-medium text-foreground/60">Mantenha seus dados e avatar atualizados</p>
               </div>
               
-              <div className="space-y-6">
-                <div className="space-y-2">
+              <div className="space-y-8">
+                <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Avatar</label>
                   <AvatarSelector
                     selectedAvatarIndex={selectedAvatar}
                     onSelect={setSelectedAvatar}
                   />
+                  <Button 
+                    size="sm" 
+                    fullWidth 
+                    variant="outline"
+                    onClick={handleUpdateAvatar} 
+                    disabled={isLoading}
+                  >
+                    ATUALIZAR AVATAR
+                  </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Nome Completo</label>
-                    <input
-                      type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                      placeholder="Seu nome"
-                    />
+                <div className="space-y-4 pt-6 border-t border-border-subtle">
+                  <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Informações Pessoais</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase text-foreground/40">Nome Completo</label>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                        placeholder="Seu nome"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase text-foreground/40">Usuário</label>
+                      <input
+                        type="text"
+                        value={editUsername}
+                        onChange={(e) => setEditUsername(e.target.value)}
+                        className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                        placeholder="Seu usuário"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Usuário</label>
-                    <input
-                      type="text"
-                      value={editUsername}
-                      onChange={(e) => setEditUsername(e.target.value)}
-                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                      placeholder="Seu usuário"
-                    />
-                  </div>
+                  <Button 
+                    size="sm" 
+                    fullWidth 
+                    variant="outline"
+                    onClick={handleUpdateInfo} 
+                    disabled={isLoading}
+                  >
+                    ATUALIZAR DADOS
+                  </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border-subtle py-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Nova Senha</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                      placeholder="Deixe em branco para manter"
-                    />
+                <div className="space-y-4 pt-6 border-t border-border-subtle">
+                  <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Segurança</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase text-foreground/40">Nova Senha</label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                        placeholder="Mínimo 8 caracteres"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase text-foreground/40">Confirmar Senha</label>
+                      <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                        placeholder="Confirmação"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-foreground/40">Confirmar Senha</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                      placeholder="Confirmação"
-                    />
-                  </div>
+                  <Button 
+                    size="sm" 
+                    fullWidth 
+                    variant="outline"
+                    onClick={handleUpdatePassword} 
+                    disabled={isLoading}
+                  >
+                    ATUALIZAR SENHA
+                  </Button>
                 </div>
               </div>
               
               {error && (
-                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/50 text-red-500 text-xs font-bold text-center">
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/50 text-red-500 text-xs font-bold text-center animate-in fade-in zoom-in-95">
                   {error}
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button variant="outline" fullWidth onClick={() => { setIsEditingProfile(false); setError(""); }} disabled={isLoading}>
-                  Cancelar
-                </Button>
-                <Button fullWidth onClick={handleSaveProfile} disabled={isLoading}>
-                  {isLoading ? "Salvando..." : "Salvar Alterações"}
+              {successMessage && (
+                <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/50 text-green-500 text-xs font-bold text-center animate-in fade-in zoom-in-95">
+                  {successMessage}
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-border-subtle">
+                <Button variant="secondary" fullWidth onClick={() => { setIsEditingProfile(false); setError(""); setSuccessMessage(""); }} disabled={isLoading}>
+                  FECHAR
                 </Button>
               </div>
             </div>

@@ -175,17 +175,30 @@ export class AuthRepository {
         });
       }
 
-      // Atualização simulada para os campos name, username e email
+      // 3. Atualização de Nome e Usuário (PATCH /user/update/{id})
       const savedUserStr = localStorage.getItem("quiz_user");
       let currentUser: any = {};
       if (savedUserStr) {
         currentUser = JSON.parse(savedUserStr);
       }
 
+      // Regra: envia apenas os campos que foram alterados
+      const updateBody: any = {};
+      if (data.name && data.name !== currentUser.name) {
+        updateBody.name = data.name;
+      }
+      if (data.username && data.username !== currentUser.username) {
+        updateBody.username = data.username;
+      }
+
+      if (Object.keys(updateBody).length > 0) {
+        await apiClient.patch<any>(`/user/update/${userId}`, updateBody);
+      }
+
       const user: User = {
         id: userId,
-        name: data.name || currentUser.name,
-        username: data.username || currentUser.username,
+        name: updateBody.name !== undefined ? updateBody.name : currentUser.name,
+        username: updateBody.username !== undefined ? updateBody.username : currentUser.username,
         email: data.email || currentUser.email || "N/A",
         profileUser: data.avatarIndex || currentUser.profileUser || "N/A",
         totalPoints: currentUser.totalPoints || 0,

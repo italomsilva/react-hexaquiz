@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  const [selectedAvatar, setSelectedAvatar] = useState("0");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +86,7 @@ export default function RegisterPage() {
           />
 
           <AvatarSelector 
-            selectedAvatar={selectedAvatar} 
+            selectedAvatarIndex={selectedAvatar} 
             onSelect={setSelectedAvatar} 
           />
 

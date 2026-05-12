@@ -6,7 +6,7 @@ export interface RankingItem {
   name: string;
   username: string;
   points: number;
-  profileImage?: string; // Armazena o índice (ex: "0", "1")
+  profileImage?: string; 
   isCurrentUser?: boolean;
 }
 
@@ -20,15 +20,22 @@ export class RankingRepository {
   > {
     try {
       const loggedStr = localStorage.getItem("quiz_user");
+      if (!loggedStr) {
+        throw new Error("Usuário não autenticado");
+      }
 
-      const activeUser = loggedStr ? JSON.parse(loggedStr) : "";
+      const activeUser = JSON.parse(loggedStr);
+      if (!activeUser?.id) {
+        throw new Error("ID do usuário não encontrado");
+      }
+
       const response = await apiClient.get<any>(
-        `/ranking/${activeUser?.id}?startDate=2026-05-08&endDate=2026-05-11&page=0&size=50`,
+        `/ranking/${activeUser.id}?startDate=2026-05-08&endDate=2026-05-11&page=0&size=50`,
       );
 
-      const weeklyRanking: RankingItem[] = response.weeklyRanking.content.map(
+      const weeklyRanking: RankingItem[] = (response.weeklyRanking?.content || []).map(
         (item: any, index: number) => ({
-          rank: index + 1, // backend não retorna rank, apenas ordem paginada
+          rank: index + 1,
           name: item.name,
           username: item.username,
           points: item.points || 0,
@@ -37,9 +44,9 @@ export class RankingRepository {
         }),
       );
 
-      const geralRanking: RankingItem[] = response.geralRanking.content.map(
+      const geralRanking: RankingItem[] = (response.geralRanking?.content || []).map(
         (item: any, index: number) => ({
-          rank: index + 1, // backend não retorna rank, apenas ordem paginada
+          rank: index + 1,
           name: item.name,
           username: item.username,
           points: item.points || 0,
@@ -50,9 +57,14 @@ export class RankingRepository {
 
       return {
         status: "success",
-        data: { weeklyRanking, geralRanking, positionRanking: response.positionRanking ?? 0 },
+        data: { 
+          weeklyRanking, 
+          geralRanking, 
+          positionRanking: response.geralRanking.positionRanking ?? 0 
+        },
       };
     } catch (error: any) {
+      console.error("[RankingRepository Error]:", error);
       return {
         status: "error",
         data: null as any,

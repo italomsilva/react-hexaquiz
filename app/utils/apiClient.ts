@@ -42,6 +42,9 @@ export const apiClient = {
       const responseData = isJson ? await response.json() : null;
 
       if (!response.ok) {
+        if (response.status === 403 && typeof window !== 'undefined') {
+          window.location.href = '/forbidden';
+        }
         throw new Error(responseData?.message || "Erro na requisição para a API");
       }
 
