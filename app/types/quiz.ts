@@ -1,9 +1,9 @@
 export enum QuestionType {
-  MULTIPLE_CHOICE = 1,
-  TRUE_FALSE = 2,
-  GUESS_THE_WORD = 3,
-  WORDLE = 4,
-  ORDERING = 5,
+  MULTIPLE_CHOICE = 0,
+  TRUE_FALSE = 1,
+  GUESS_THE_WORD = 2,
+  WORDLE = 3,
+  ORDERING = 4,
 }
 
 
