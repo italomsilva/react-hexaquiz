@@ -86,7 +86,10 @@ export default function QuizPage() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
 
-        <main className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col">
+        <main 
+          className="flex-1 w-full max-w-md mx-auto p-6 flex flex-col select-none"
+          onContextMenu={(e) => e.preventDefault()}
+        >
           {/* Progress Bar */}
           <div className="w-full bg-surface-elevated h-2 rounded-full mb-8 overflow-hidden">
             <div
