@@ -39,7 +39,7 @@ export class QuizRepository {
         index: response.session.index || 0,
         points: response.session.points || 0,
         finished: response.session.finished || false,
-        correctCount: 0
+        correctCount: (response.session.points || 0) / 10
       };
 
       return { status: "success", data: { questions, session } };

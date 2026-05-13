@@ -102,12 +102,13 @@ export class AuthRepository {
   ): Promise<ApiResponse<{ stats: any }>> {
     try {
       const stats = await apiClient.get<any>(`/statistics/${userIdStr}`);
+      const accuracyValue = stats.accuracy ?? stats.acurracy ?? 0;
       return {
         status: "success",
         data: {
           stats: {
             quizzesPlayed: stats.quizzesPlayed || 0,
-            accuracy: stats.accuracy.toFixed(2) || 0, // Backend typo: acurracy
+            accuracy: typeof accuracyValue === 'number' ? accuracyValue.toFixed(2) : accuracyValue,
             points: stats.points || 0,
           },
         },
