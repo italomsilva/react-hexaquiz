@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.113:8080/hexaquiz'}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'https://hexaquiz-backend.onrender.com/hexaquiz'}/:path*`,
       },
     ];
   },
