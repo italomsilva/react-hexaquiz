@@ -43,7 +43,7 @@ export const apiClient = {
 
       if (!response.ok) {
         if (response.status === 403 && typeof window !== 'undefined') {
-          window.location.href = '/forbidden';
+          window.dispatchEvent(new CustomEvent('api-forbidden'));
         }
         throw new Error(responseData?.message || "Erro na requisição para a API");
       }

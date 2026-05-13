@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/Button";
 import Image from "next/image";
 import { safeDecodeBase64 } from "@/app/utils/crypto";
+import { normalizeText } from "@/app/utils/text";
 
 interface WordleQuestionProps {
   question: Question;
@@ -23,7 +24,7 @@ export function WordleQuestion({
   correctAnswer,
   onSelect,
 }: WordleQuestionProps) {
-  const decodedLocalAnswer = safeDecodeBase64(question.answer).toUpperCase();
+  const decodedLocalAnswer = normalizeText(safeDecodeBase64(question.answer));
 
   const targetWord = decodedLocalAnswer;
   const wordLength = targetWord.length;
@@ -69,7 +70,7 @@ export function WordleQuestion({
         setGuesses(newGuesses);
         setCurrentGuess("");
 
-        if (currentGuess === targetWord) {
+        if (normalizeText(currentGuess) === targetWord) {
           setGameOver(true);
           onSelect(currentGuess);
         } else if (newGuesses.length >= MAX_ATTEMPTS) {
@@ -79,8 +80,8 @@ export function WordleQuestion({
       }
     } else if (key === "⌫" || key === "BACKSPACE") {
       setCurrentGuess((prev) => prev.slice(0, -1));
-    } else if (/^[A-Z]$/.test(key) && currentGuess.length < wordLength) {
-      setCurrentGuess((prev) => prev + key);
+    } else if (/^[A-ZÇÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛ]$/i.test(key) && currentGuess.length < wordLength) {
+      setCurrentGuess((prev) => prev + normalizeText(key));
     }
   }, [currentGuess, gameOver, isAnswered, guesses, targetWord, wordLength, onSelect]);
 
@@ -184,7 +185,7 @@ export function WordleQuestion({
       {isAnswered && correctAnswer && (
         <div className="text-center animate-in slide-in-from-top-4">
            <p className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-1">A palavra era</p>
-           <p className="text-4xl font-black italic text-primary tracking-[0.2em]">{correctAnswer.toUpperCase()}</p>
+           <p className="text-4xl font-black italic text-primary tracking-[0.2em]">{normalizeText(correctAnswer)}</p>
         </div>
       )}
     </div>

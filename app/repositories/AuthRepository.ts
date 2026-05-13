@@ -1,6 +1,7 @@
 import { User } from "../types/auth";
 import { ApiResponse } from "../types/api";
 import { apiClient } from "../utils/apiClient";
+import { getAvatarUrl } from "../utils/avatar";
 
 export class AuthRepository {
   static async login(
@@ -59,7 +60,7 @@ export class AuthRepository {
         username,
         email,
         password,
-        profileUser: avatarIndex
+        profileUser: getAvatarUrl(avatarIndex)
       });
 
       // O create agora retorna um ResponseLoginDto com tokens e user
@@ -125,7 +126,7 @@ export class AuthRepository {
   static async updateAvatar(userId: string, avatarIndex: string): Promise<ApiResponse<User>> {
     try {
       const userData = await apiClient.patch<any>(`/user/update/image/${userId}`, {
-        profileImage: avatarIndex // O DTO RequestUpdateProfileImageDto recebe profileImage (string que agora será o índice)
+        profileImage: getAvatarUrl(avatarIndex) // Envia a URL completa
       });
       
       const savedUserStr = localStorage.getItem("quiz_user");
@@ -171,7 +172,7 @@ export class AuthRepository {
 
       if (data.avatarIndex) {
         await apiClient.patch<any>(`/user/update/image/${userId}`, {
-          profileImage: data.avatarIndex
+          profileImage: getAvatarUrl(data.avatarIndex)
         });
       }
 
@@ -200,7 +201,7 @@ export class AuthRepository {
         name: updateBody.name !== undefined ? updateBody.name : currentUser.name,
         username: updateBody.username !== undefined ? updateBody.username : currentUser.username,
         email: data.email || currentUser.email || "N/A",
-        profileUser: data.avatarIndex || currentUser.profileUser || "N/A",
+        profileUser: data.avatarIndex ? getAvatarUrl(data.avatarIndex) : (currentUser.profileUser || "N/A"),
         totalPoints: currentUser.totalPoints || 0,
         createdAt: currentUser.createdAt || new Date().toISOString(),
         positionRanking: currentUser.positionRanking || 0,

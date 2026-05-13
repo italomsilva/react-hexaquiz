@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import Image from "next/image";
 import { safeDecodeBase64 } from "@/app/utils/crypto";
+import { normalizeText } from "@/app/utils/text";
 
 interface GuessTheWordQuestionProps {
   question: Question;
@@ -25,12 +26,12 @@ export function GuessTheWordQuestion({
 }: GuessTheWordQuestionProps) {
   const [inputValue, setInputValue] = useState("");
   
-  // Descriptografa o gabarito prévio (Mock de Base64) só pra desenhar o número de caixas e validar length
-  const decodedLocalAnswer = safeDecodeBase64(question.answer).toUpperCase();
+  // Descriptografa e normaliza o gabarito
+  const decodedLocalAnswer = normalizeText(safeDecodeBase64(question.answer));
   
   const targetAnswerLength = decodedLocalAnswer.length;
   // Apenas revelamos totalmente na UI se isAnswered && correctAnswer estiver disponível
-  const finalAnswer = isAnswered && correctAnswer ? correctAnswer.toUpperCase() : decodedLocalAnswer;
+  const finalAnswer = isAnswered && correctAnswer ? normalizeText(correctAnswer) : decodedLocalAnswer;
 
   // Reset input when question changes
   useEffect(() => {
@@ -95,9 +96,9 @@ export function GuessTheWordQuestion({
             let bg = "bg-surface";
 
             if (isAnswered && correctAnswer) {
-              const fullInput = selectedOption?.toUpperCase() || "";
+              const fullInput = normalizeText(selectedOption || "");
               const inputLetter = fullInput[index] || "";
-              const correctLetter = correctAnswer.toUpperCase()[index];
+              const correctLetter = normalizeText(correctAnswer)[index];
 
               if (inputLetter === correctLetter) {
                 borderColor = "border-green-500";

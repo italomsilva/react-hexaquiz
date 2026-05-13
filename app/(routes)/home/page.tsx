@@ -26,7 +26,7 @@ export default function HomePage() {
       <div 
         className="min-h-screen text-foreground flex flex-col"
         style={{
-          backgroundImage: "url('/images/home-bg.jpg')",
+          backgroundImage: "url('https://raw.githubusercontent.com/italomsilva/dataset-images-hexaquiz/e6ee3bd1cf21eb0d7ced5b5df2907890aa776569/backgrounds/home-bg.jpg')",
           backgroundColor: theme === "dark" ? "rgba(0, 32, 34, 0.4)" : "rgba(255, 255, 255, 0.4)",
           backgroundBlendMode: theme === "dark" ? "multiply" : "",
           backgroundSize: "cover",

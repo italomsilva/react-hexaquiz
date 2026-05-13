@@ -10,6 +10,7 @@ import {
   RankingItem,
 } from "@/app/repositories/RankingRepository";
 import { AVATARS } from "@/app/constants/avatars";
+import { getAvatarUrl } from "@/app/utils/avatar";
 import { useAuth } from "@/app/context/AuthContext";
 
 export default function RankingPage() {
@@ -58,7 +59,7 @@ export default function RankingPage() {
                   <div className="w-full h-full rounded-full overflow-hidden relative">
                     {user?.profileUser && user.profileUser !== "N/A" ? (
                       <Image 
-                        src={AVATARS[parseInt(user.profileUser)] || AVATARS[0]} 
+                        src={getAvatarUrl(user.profileUser)} 
                         fill 
                         className="object-cover" 
                         alt="Você" 
@@ -152,7 +153,7 @@ export default function RankingPage() {
                     <div className="w-10 h-10 rounded-full bg-surface-elevated overflow-hidden relative border border-border-subtle">
                       {item.profileImage && item.profileImage !== "N/A" ? (
                         <Image
-                          src={AVATARS[parseInt(item.profileImage)] || AVATARS[0]}
+                          src={getAvatarUrl(item.profileImage)}
                           alt={item.name}
                           fill
                           className="object-cover"

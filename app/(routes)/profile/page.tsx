@@ -10,6 +10,7 @@ import { useTheme } from "@/app/context/ThemeContext";
 import { AuthRepository } from "@/app/repositories/AuthRepository";
 import { AvatarSelector } from "@/app/components/register/AvatarSelector";
 import { AVATARS } from "@/app/constants/avatars";
+import { getAvatarUrl } from "@/app/utils/avatar";
 
 export default function ProfilePage() {
   const theme = useTheme();
@@ -37,7 +38,9 @@ export default function ProfilePage() {
         }
       });
       if (user.profileUser && user.profileUser !== "N/A") {
-        setSelectedAvatar(user.profileUser);
+        // Se for uma URL, tenta encontrar o índice correspondente para o seletor
+        const index = AVATARS.indexOf(user.profileUser);
+        setSelectedAvatar(index !== -1 ? index.toString() : user.profileUser);
       }
       setEditName(user.name || "N/A");
       setEditUsername(user.username || "N/A");
@@ -116,7 +119,7 @@ export default function ProfilePage() {
                 <div className="w-full h-full rounded-full bg-surface-elevated flex items-center justify-center overflow-hidden relative">
                   {user?.profileUser && user.profileUser !== "N/A" ? (
                     <Image
-                      src={AVATARS[parseInt(user.profileUser)] || AVATARS[0]}
+                      src={getAvatarUrl(user.profileUser)}
                       alt={user.name}
                       fill
                       className="object-cover"

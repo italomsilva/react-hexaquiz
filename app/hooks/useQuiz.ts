@@ -5,6 +5,7 @@ import { Question, QuestionType } from "@/app/types/quiz";
 import { QuizRepository } from "@/app/repositories/QuizRepository";
 import { useAuth } from "@/app/context/AuthContext";
 import { safeDecodeBase64 } from "@/app/utils/crypto";
+import { normalizeText } from "@/app/utils/text";
 
 export const useQuiz = () => {
   const { user } = useAuth();
@@ -53,8 +54,9 @@ export const useQuiz = () => {
     setSelectedOption(answer);
 
     if (isGuessTheWord) {
-      const decodedAnswer = safeDecodeBase64(currentQuestion.answer).toUpperCase();
-      const isCorrect = decodedAnswer === answer.toUpperCase();
+      const decodedAnswer = normalizeText(safeDecodeBase64(currentQuestion.answer));
+      const normalizedInput = normalizeText(answer);
+      const isCorrect = decodedAnswer === normalizedInput;
 
       if (!isCorrect && nextAttempt < 5) {
         setIsValidating(false);
@@ -63,6 +65,9 @@ export const useQuiz = () => {
     }
 
     let payloadAnswer = answer;
+    if (currentQuestion.type === QuestionType.GUESS_THE_WORD || currentQuestion.type === QuestionType.WORDLE) {
+      payloadAnswer = normalizeText(answer);
+    }
     if (currentQuestion.type === QuestionType.MULTIPLE_CHOICE) {
       const option = currentQuestion.options.find(o => o.id === answer);
       if (option && option.text) {

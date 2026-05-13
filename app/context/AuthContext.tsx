@@ -26,6 +26,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    const handleForbidden = () => {
+      router.push("/forbidden");
+    };
+
+    window.addEventListener("api-forbidden", handleForbidden);
+    return () => window.removeEventListener("api-forbidden", handleForbidden);
+  }, [router]);
+
   const login = async (username: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     const res = await AuthRepository.login(username, password);

@@ -3,7 +3,7 @@ export interface User {
   name: string;
   username: string;
   email: string;
-  profileUser?: string; // Agora armazena o índice (ex: "0", "1")
+  profileUser?: string; // Armazena a URL do avatar (ou índice legado)
   totalPoints: number;
   createdAt: string;
   positionRanking: number;

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ThemeToggle } from '@/app/components/ui/ThemeToggle';
 import { useAuth } from '@/app/context/AuthContext';
 import { AVATARS } from '@/app/constants/avatars';
+import { getAvatarUrl } from '@/app/utils/avatar';
 
 export const Header = () => {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ export const Header = () => {
           <Link href="/profile" className="w-10 h-10 rounded-full bg-surface-elevated border border-border-standard flex items-center justify-center overflow-hidden hover:border-primary transition-colors relative">
             {user?.profileUser && user.profileUser !== "N/A" ? (
               <Image
-                src={AVATARS[parseInt(user.profileUser)] || AVATARS[0]}
+                src={getAvatarUrl(user.profileUser)}
                 alt={user.name}
                 fill
                 className="object-cover"
