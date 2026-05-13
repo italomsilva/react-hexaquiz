@@ -161,7 +161,7 @@ export default function ProfilePage() {
               </div>
               <div className="p-5 rounded-2xl bg-surface border border-border-subtle text-center space-y-1">
                 <div className="text-xs font-black text-foreground/40 uppercase tracking-widest">Precisão</div>
-                <div className="text-2xl font-black italic text-primary">{stats.accuracy}%</div>
+                <div className="text-2xl font-black italic text-primary">{(stats.accuracy/100).toFixed(2)}%</div>
               </div>
             </div>
 

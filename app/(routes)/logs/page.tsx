@@ -132,7 +132,7 @@ export default function LogsPage() {
                           <div className="relative">
                             <div className="w-16 h-16 rounded-2xl overflow-hidden bg-background border border-border-subtle relative group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 shadow-lg">
                                 <Image
-                                  src={user.profileUser.startsWith("/") ? user.profileUser : (AVATARS[parseInt(user.profileUser)] || AVATARS[0])}
+                                  src={user.profileUser ?? AVATARS[0]}
                                   alt={user.name}
                                   fill
                                   className="object-cover"
