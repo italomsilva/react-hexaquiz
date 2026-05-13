@@ -197,13 +197,6 @@ export default function RankingPage() {
               ))
             )}
           </div>
-
-          <div className="mt-auto pt-6 text-center">
-            <p className="text-foreground/40 text-xs font-medium uppercase tracking-widest">
-              Próxima atualização em{" "}
-              <span className="text-primary">12h 45m</span>
-            </p>
-          </div>
         </main>
       </div>
     </ProtectedRoute>

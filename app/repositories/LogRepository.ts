@@ -16,7 +16,7 @@ export interface LogEntry {
 export class LogRepository {
   static async getLogs(): Promise<ApiResponse<{ log: LogEntry[] }>> {
     try {
-      const response = await apiClient.get<any>("/log?date=2026-05-09");
+      const response = await apiClient.get<any>("/log?date=2026-05-13");
 
       return {
         status: "success",
