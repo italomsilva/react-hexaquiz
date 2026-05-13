@@ -12,9 +12,30 @@ export default function HomePage() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const [rankingError, setRankingError] = React.useState("");
+  const [currentPosition, setCurrentPosition] = React.useState<number>(0);
+
+  // Sincronizar posição inicial do usuário
+  React.useEffect(() => {
+    if (user?.positionRanking) {
+      setCurrentPosition(user.positionRanking);
+    }
+  }, [user]);
+
+  // Se a posição for 0, tenta buscar do backend (caso o usuário tenha acabado de jogar)
+  React.useEffect(() => {
+    if (user?.id && currentPosition === 0) {
+      import("@/app/repositories/RankingRepository").then(({ RankingRepository }) => {
+        RankingRepository.getRanking().then(res => {
+          if (res.status === "success" && res.data && res.data.positionRanking > 0) {
+            setCurrentPosition(res.data.positionRanking);
+          }
+        });
+      });
+    }
+  }, [user?.id, currentPosition]);
 
   const handleRankingClick = (e: React.MouseEvent) => {
-    if (!user?.positionRanking || user.positionRanking === 0) {
+    if (currentPosition === 0) {
       e.preventDefault();
       setRankingError("Responda o quiz de hoje para entrar no ranking!");
       setTimeout(() => setRankingError(""), 3000);
@@ -112,14 +133,14 @@ export default function HomePage() {
             <div className="flex items-center justify-between p-3 rounded-lg bg-surface-elevated border border-border-subtle">
               <div className="flex items-center gap-3">
                 <span className="text-xl font-black italic text-foreground/60">
-                  {(!user?.positionRanking || user?.positionRanking === 0) ? '---' : `#${user.positionRanking}`}
+                  {currentPosition === 0 ? '---' : `#${currentPosition}`}
                 </span>
                 <span className="text-sm font-bold">Sua Posição</span>
               </div>
               <Link 
                 href="/ranking" 
                 onClick={handleRankingClick}
-                className={`text-xs font-black cursor-pointer transition-colors ${(!user?.positionRanking || user?.positionRanking === 0) ? 'text-foreground/20' : 'text-primary'}`}
+                className={`text-xs font-black cursor-pointer transition-colors ${currentPosition === 0 ? 'text-foreground/20' : 'text-primary'}`}
               >
                 VER RANKING
               </Link>
