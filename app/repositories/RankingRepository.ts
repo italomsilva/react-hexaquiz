@@ -30,7 +30,7 @@ export class RankingRepository {
       }
 
       const response = await apiClient.get<any>(
-        `/ranking/${activeUser.id}?startDate=2026-05-08&endDate=2026-05-14&page=0&size=50`,
+        `/ranking/${activeUser.id}?startDate=2026-05-013&endDate=2026-05-17&page=0&size=50`,
       );
 
       const weeklyRanking: RankingItem[] = (response.weeklyRanking?.content || []).map(
