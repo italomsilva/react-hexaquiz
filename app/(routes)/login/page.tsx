@@ -220,7 +220,8 @@ export default function LoginPage() {
                 placeholder="Seu nome de usuário"
                 required
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+                maxLength={18}
                 error={
                   !isRegisterMode &&
                   error &&
@@ -337,7 +338,8 @@ export default function LoginPage() {
                   placeholder="Seu nome de usuário"
                   required
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+                  maxLength={18}
                 />
 
                 <div className="flex flex-col gap-3 mt-6">

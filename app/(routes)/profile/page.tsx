@@ -237,7 +237,8 @@ export default function ProfilePage() {
                       <input
                         type="text"
                         value={editUsername}
-                        onChange={(e) => setEditUsername(e.target.value)}
+                        onChange={(e) => setEditUsername(e.target.value.replace(/\s/g, ""))}
+                        maxLength={18}
                         className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
                         placeholder="Seu usuário"
                       />

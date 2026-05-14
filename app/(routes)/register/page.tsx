@@ -73,7 +73,8 @@ export default function RegisterPage() {
             placeholder="Escolha um nome de usuário"
             required
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+            maxLength={18}
             error={error ? " " : ""}
           />
           <Input
