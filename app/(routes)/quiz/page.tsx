@@ -22,6 +22,7 @@ export default function QuizPage() {
     isValidating,
     currentQuestion,
     totalQuestions,
+    error,
     handleOptionSelect,
     handleNext,
   } = useQuiz();
@@ -34,6 +35,22 @@ export default function QuizPage() {
           <div className="flex-1 flex flex-col relative">
             <LoadingScreen message="CARREGANDO PARTIDA..." />
           </div>
+        </div>
+      </ProtectedRoute>
+    );
+  }
+
+  if (error || !currentQuestion) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen bg-background flex flex-col">
+          <Header />
+          <main className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 animate-in zoom-in duration-500">
+             <div className="text-xl font-bold text-red-500">{error || "Não foi possível carregar o quiz. Tente novamente mais tarde."}</div>
+             <Link href="/home" className="w-full max-w-sm">
+               <Button fullWidth variant="primary">Voltar para a Home</Button>
+             </Link>
+          </main>
         </div>
       </ProtectedRoute>
     );

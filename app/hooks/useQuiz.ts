@@ -20,6 +20,7 @@ export const useQuiz = () => {
   const [attempts, setAttempts] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const hasFetchedRef = useRef(false);
   useEffect(() => {
@@ -27,14 +28,24 @@ export const useQuiz = () => {
     hasFetchedRef.current = true;
 
     QuizRepository.getDailyQuiz().then(res => {
-      const data = res.data;
-      if (data) {
-        setQuestions(data.questions);
-        if (data.session) {
-          setCurrentQuestionIndex(data.session.index);
-          setScore(data.session.points);
-          setIsFinished(data.session.finished);
-          setCorrectAnswersCount(data.session.correctCount || 0);
+      if (res.status === "error") {
+        setError(res.error?.message || "Erro ao carregar o quiz.");
+      } else {
+        const data = res.data;
+        if (data) {
+          if (data.questions && data.questions.length > 0) {
+            setQuestions(data.questions);
+          } else {
+            setError("Nenhuma pergunta encontrada.");
+          }
+          if (data.session) {
+            setCurrentQuestionIndex(data.session.index);
+            setScore(data.session.points);
+            setIsFinished(data.session.finished);
+            setCorrectAnswersCount(data.session.correctCount || 0);
+          }
+        } else {
+          setError("Nenhuma pergunta encontrada.");
         }
       }
       setIsLoading(false);
@@ -140,6 +151,7 @@ export const useQuiz = () => {
     isValidating,
     currentQuestion,
     totalQuestions: questions.length,
+    error,
     handleOptionSelect,
     handleNext,
     resetQuiz,

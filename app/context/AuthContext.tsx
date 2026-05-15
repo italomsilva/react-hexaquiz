@@ -88,6 +88,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem("quiz_user");
+    localStorage.removeItem("hexaquiz_jwt");
+    localStorage.removeItem("hexaquiz_refresh_jwt");
     router.push("/login");
   };
 

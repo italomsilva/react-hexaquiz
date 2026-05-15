@@ -109,7 +109,14 @@ export function WordleQuestion({
       )}
 
       {/* Grid */}
-      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${wordLength}, 1fr)` }}>
+      <div 
+        className="grid w-full px-2 mx-auto" 
+        style={{ 
+          gridTemplateColumns: `repeat(${wordLength}, 1fr)`,
+          gap: wordLength > 7 ? '0.25rem' : '0.5rem',
+          maxWidth: `${wordLength * 3.5}rem`
+        }}
+      >
         {[...Array(MAX_ATTEMPTS)].map((_, rowIndex) => {
           const guess = guesses[rowIndex];
           const isCurrentRow = rowIndex === guesses.length;
@@ -132,11 +139,13 @@ export function WordleQuestion({
               empty: "bg-surface border-border-standard text-foreground",
             };
 
+            const fontSize = wordLength > 8 ? "text-base" : wordLength > 6 ? "text-xl" : "text-2xl";
+
             return (
               <div
                 key={`${rowIndex}-${colIndex}`}
                 aria-label={`Linha ${rowIndex + 1}, Coluna ${colIndex + 1}: ${letter || "Vazio"}${status !== "empty" ? `, Status: ${status}` : ""}`}
-                className={`w-12 h-12 flex items-center justify-center border-2 rounded-lg text-2xl font-black transition-all duration-300 ${
+                className={`aspect-square w-full flex items-center justify-center border-2 rounded-lg ${fontSize} font-black transition-all duration-300 ${
                   statusStyles[status]
                 } ${isCurrentRow && letter ? "border-primary scale-110" : ""}`}
               >

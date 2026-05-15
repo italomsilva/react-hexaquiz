@@ -16,6 +16,9 @@ export class AuthRepository {
 
       if (response && response.tokens && response.tokens.accessToken) {
         localStorage.setItem("hexaquiz_jwt", response.tokens.accessToken);
+        if (response.tokens.refreshToken) {
+          localStorage.setItem("hexaquiz_refresh_jwt", response.tokens.refreshToken);
+        }
       }
 
       const userData = response.user || response;
@@ -66,6 +69,9 @@ export class AuthRepository {
       // O create agora retorna um ResponseLoginDto com tokens e user
       if (response && response.tokens && response.tokens.accessToken) {
         localStorage.setItem("hexaquiz_jwt", response.tokens.accessToken);
+        if (response.tokens.refreshToken) {
+          localStorage.setItem("hexaquiz_refresh_jwt", response.tokens.refreshToken);
+        }
       }
 
       const userData = response.user || response;
