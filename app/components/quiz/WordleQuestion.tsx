@@ -32,6 +32,29 @@ export function WordleQuestion({
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [gameOver, setGameOver] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const storageKey = `wordle_state_${question.id}`;
+
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.guesses) setGuesses(parsed.guesses);
+        if (parsed.gameOver) setGameOver(parsed.gameOver);
+      } catch (e) {
+        console.error("Failed to parse Wordle state", e);
+      }
+    }
+    setIsLoaded(true);
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(storageKey, JSON.stringify({ guesses, gameOver }));
+    }
+  }, [guesses, gameOver, isLoaded, storageKey]);
 
   // Keyboard mapping
   const keyboardRows = [
