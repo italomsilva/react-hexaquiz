@@ -37,12 +37,24 @@ export function WordleQuestion({
   const storageKey = `wordle_state_${question.id}`;
 
   useEffect(() => {
+    // Reset state before loading new question
+    setIsLoaded(false);
+    setGuesses([]);
+    setCurrentGuess("");
+    setGameOver(false);
+
     const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.guesses) setGuesses(parsed.guesses);
-        if (parsed.gameOver) setGameOver(parsed.gameOver);
+        
+        // Se já acabou, limpamos para não travar o usuário em uma nova sessão
+        if (parsed.gameOver) {
+          localStorage.removeItem(storageKey);
+        } else {
+          if (parsed.guesses) setGuesses(parsed.guesses);
+          if (parsed.gameOver !== undefined) setGameOver(parsed.gameOver);
+        }
       } catch (e) {
         console.error("Failed to parse Wordle state", e);
       }
